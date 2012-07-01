@@ -17,31 +17,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   
-  <scm>
-    <url>https://github.com/theZorro266/simple-region-market</url>
-    <tag>HEAD</tag>
-    <connection>scm:git:git://github.com/theZorro266/simple-region-market.git</connection>
-    <developerConnection>scm:git:git@github.com:theZorro266/simple-region-market.git</developerConnection>
-  </scm>
-  
-  <issueManagement>
-    <system>Own</system>
-    <url>http://www.thezorro266.com/plugin-simpleregionmarket-ticket.html</url>
-  </issueManagement>
-  
-  <distributionManagement>
-    <repository>
-      <id>thezorro266-releases</id>
-      <name>SimpleRegionMarket Releases</name>
-      <url>sftp://thezorro266.com/var/www/m2repository/releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>thezorro266-snapshots</id>
-      <name>SimpleRegionMarket Snapshots</name>
-      <url>sftp://thezorro266.com/var/www/m2repository/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
-  
   <repositories>
     <repository>
       <id>bukkit-repo</id>
@@ -88,13 +63,5 @@
         <filtering>true</filtering>
       </resource>
     </resources>
-    
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-         <artifactId>wagon-ssh</artifactId>
-         <version>2.2</version>
-      </extension>
-    </extensions>
   </build>
 </project>

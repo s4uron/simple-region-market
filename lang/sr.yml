@@ -1,0 +1,59 @@
+version: 2.0.1
+MAIN:
+  WARN:
+    NO_ECO_API: Nisu nadjeni ni Register ni Vault pluginovi - Prebacujem na verziju bez ekonomije
+    VAULT_NO_ECO: Nemate sistem za ekonomiju osim sto Vault plugin radi
+    REGISTER_NO_ECO: Nemate sistem za ekonomiju osim sto Register plugin radi
+  ERROR:
+    NO_WORLDGUARD: WorldGuard plugin nije nadjen
+CHECK:
+  WARN:
+    NO_WORLD: Svet $0 nije ucitan!
+    NO_REGION: WorldGuard region $0 nije nadjen!
+TEMPLATES:
+  NORM:
+    NO_TEMPLATES: Nije nadjen sablon - Pravim standardne sablone
+  WARN:
+    TYPE_NOT_KOWN: 'Nije poznat tip sablona: $0'
+  ERROR:
+    NO_STANDARD_TEMPLATES: Nije moguce napraviti standardne sablone
+CMD:
+  UNTAKE:
+    NO_ARG: 'Komanda: /rm untake <region> - Uklanja vlasnike i clanove iz regiona'
+  REMOVE:
+    NO_ARG: 'Komanda: /rm rem <region> - Uklanja region iz sistema'
+PLAYER:
+  ERROR:
+    ECO_PROBLEM: Desila se greska prilikom transfera novca.
+    NO_MONEY: Nemate dovoljno novaca.
+    NO_PRICE: Cena nije nadjena.
+    NO_RENTTIME: Vreme za izdavanje nije nadjeno.
+    NO_REGION: Nije nadjen region sa datim imenom.
+    NOT_OWNER: Vi ne posedujete ovaj region.
+    PRICE_LIMIT: Cena nije izmedju $0 i $1.
+    RENTTIME_LIMIT: Vreme za izdavanje nije izmedju $0 i $1.
+    RERENT_TOO_LONG: Ne mozete da prosirite svoju sobu.
+    NEED_ONE_SIGN: Ovaj sablon zahteva bar jedan znak kad je okupirano.
+    OTHER_TOKEN: Ne mozete da napravite znak ovog tipa kad ima znakova drugog tipa na ovom regionu.
+  NO_PERMISSIONS:
+    BUY: Nemate dozvolu da kupite ovaj region.
+    SELL: Nemate dozvolu da prodate ovaj region.
+  REGION:
+    YOURS: Ovo je vas region.
+    BOUGHT: Uspesno ste kupili region $0.
+    RENT: Uspesno ste unajmili region $0.
+    JUST_TAKEN_BY: Region $0 je okupiran na ime $1.
+    TAKEN_BY: Vlasnik ovog regiona je $0.
+    ADDED_SIGN: Uspesno je dodat znak na region.
+    ADDED_RENTTIME: Uspesno ste produzili vase vreme sobe.
+    AUTO_EXPANDED: Vas region $0 je automatski prosiren.
+    DELETED_SIGN: Uklonjen je znak sa regiona.
+    DELETED: Uspesno je obrisan region.
+    EXPIRED: Vas region $0 je istekao.
+  LIMITS:
+    GLOBAL: Dostigli ste globalnu granicu u regionima.
+    TOKEN: Dostigli ste tipovnu granicu u regionima.
+    GLOBAL_WORLD: Dostigli ste globalnu granicu u regionima u ovom svetu.
+    TOKEN_WORLD: Dostigli ste tipovnu granicu u regionima u ovom svetu.
+    GLOBAL_PARENTREGION: Dostigli ste globalnu granicu za ovaj nad-regionin.
+    TOKEN_PARENTREGION: Dostigli ste tipovnu granicu za ovaj nad-regionin.

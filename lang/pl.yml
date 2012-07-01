@@ -1,0 +1,62 @@
+version: 2.0.3
+MAIN:
+  WARN:
+    NO_ECO_API: Nie znaleziono pluginu do obslugi ekonomii (Register lub Vault) - Przejscie na system bez ekonomii
+    VAULT_NO_ECO: Nie znaleziono zadnego pluginu ekonomicznego (Zainstalowany Vault).
+    REGISTER_NO_ECO: Nie znaleziono zadnego pluginu ekonomicznego (Zainstalowany Register).
+  ERROR:
+    NO_WORLDGUARD: Nie znaleziono pluginu WorldGuard
+CHECK:
+  WARN:
+    NO_WORLD: Swiat $0 nie zostal zaladowany!
+    NO_REGION: Nie znaleziono regionu $0!
+TEMPLATES:
+  NORM:
+    NO_TEMPLATES: Nie znaleziono szablonu - Tworzenie standardowego
+  WARN:
+    TYPE_NOT_KOWN: Nieznany typ szablonu $0
+  ERROR:
+    NO_STANDARD_TEMPLATES: Nie mozna utworzyc standardowego szablonu
+CMD:
+  UNTAKE:
+    NO_ARG: 'Uzyj: /rm untake <region> - Usuwa wlascicieli oraz uzytkownikow z regionu'
+    CONSOLE_NOWORLD: Musisz utworzyc swiat z konsoli.
+    SUCCESS: Z regionu $0 w swiecie $1 odebrano prawa wlasciciela.
+    NO_REGION: Region $0 nie zostal znaleziony w swiecie $1.
+  REMOVE:
+    NO_ARG: 'Uzyj: /rm rem <region> - Usuwa region z systemu'
+PLAYER:
+  ERROR:
+    ECO_PROBLEM: Wystapil problem z transferem gotowki.
+    NO_MONEY: Masz za malo gotowki.
+    NO_PRICE: Nie wprowadziono ceny.
+    NO_RENTTIME: Nie wprowadziono czasu wynajmu.
+    NO_REGION: Nie ma regionu o tej nazwie.
+    NOT_OWNER: Nie jestes wlascicielem tego regionu.
+    PRICE_LIMIT: Cena musi byc pomiedzy $0 a $1.
+    RENTTIME_LIMIT: Czas wynajmu musi byc pomiedzy $0 a $1.
+    RERENT_TOO_LONG: Nie mozna przedluzyc czasu wynajmu.
+    NEED_ONE_SIGN: W tym szablonie musi sie znajdowac przynajmniej jeden typ oznaczenia regionu.
+    OTHER_TOKEN: Znak dla tego regionu juz istnieje.
+  NO_PERMISSIONS:
+    BUY: Nie posiadasz uprawnien by kupic ten region.
+    SELL: Nie posiadasz uprawnien by sprzedac ten region.
+  REGION:
+    YOURS: Ten region jest Twoj.
+    BOUGHT: Kupiles region $0.
+    RENT: Wynajales region $0.
+    JUST_TAKEN_BY: Region $0 zostal kupiony przez $1.
+    TAKEN_BY: Region nalezy do $0.
+    ADDED_SIGN: Poprawnie utworzono tabliczke dla regionu.
+    ADDED_RENTTIME: Przedluzyles czas wynajmu.
+    AUTO_EXPANDED: Czas wynajmu $0 zostal przedluzony.
+    DELETED_SIGN: Usunieto znak regionu.
+    DELETED: Usunieto region.
+    EXPIRED: Uplynal czas wynajmu regionu $0.
+  LIMITS:
+    GLOBAL: Osiagnales globalny limit regionow.
+    TOKEN: Osiagnales limit znakow dla regionow.
+    GLOBAL_WORLD: Osiagnales globalny limit regionow w tym swiecie.
+    TOKEN_WORLD: Osiagnales limit znakow dla regionow w tym swiecie.
+    GLOBAL_PARENTREGION: Osiagnoles globalny limit regionow dla regionu nadzednego.
+    TOKEN_PARENTREGION: Osiagnoles globalny limit znakow regionow dla regionu nadzednego.
