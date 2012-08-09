@@ -16,6 +16,7 @@ TEMPLATES:
   WARN:
     TYPE_NOT_KOWN: I don't know the template type $0
   ERROR:
+    NO_UPDATE: Could not update templates.
     NO_STANDARD_TEMPLATES: Could not create standard templates
 COMMON:
   CONSOLE_NOWORLD: You have to give the world in the console

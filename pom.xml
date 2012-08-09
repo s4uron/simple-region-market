@@ -11,8 +11,8 @@
   <version>2.1.1-SNAPSHOT</version>
 
   <properties>
-    <state>release</state>
-    <majorversion>2.1</majorversion>
+    <state>beta</state>
+    <majorversion>2.1.1</majorversion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   

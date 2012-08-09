@@ -1,6 +1,7 @@
 package com.thezorro266.simpleregionmarket;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -23,6 +24,9 @@ import com.thezorro266.simpleregionmarket.signs.TemplateSell;
 public class TokenManager {
 	public final static String CONFIG_NAME = "templates.yml";
 	public final static File CONFIG_FILE = new File(SimpleRegionMarket.getPluginDir() + CONFIG_NAME);
+
+	public final static String TEMP_CONFIG_NAME = "templates.tmp.yml";
+	public final static File TEMP_CONFIG_FILE = new File(SimpleRegionMarket.getPluginDir() + TEMP_CONFIG_NAME);
 
 	public static ArrayList<TemplateMain> tokenList = new ArrayList<TemplateMain>();
 
@@ -130,6 +134,42 @@ public class TokenManager {
 		}
 		return count;
 	}
+	
+	public void updateTemplates() {
+		if(TEMP_CONFIG_FILE.exists()) {
+			TEMP_CONFIG_FILE.delete();
+		}
+		CONFIG_FILE.renameTo(TEMP_CONFIG_FILE);
+		plugin.saveResource(CONFIG_NAME, false);
+		
+		final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(CONFIG_FILE);
+		final YamlConfiguration tempConfigHandle = YamlConfiguration.loadConfiguration(TEMP_CONFIG_FILE);
+		for (final String key : configHandle.getKeys(false)) {
+			final String type = configHandle.getString(key + ".type");
+			for(final String key2 : tempConfigHandle.getKeys(false)) {
+				if(type.equalsIgnoreCase(tempConfigHandle.getString(key2 + ".type"))) {
+					for(final String var : configHandle.getConfigurationSection(key).getKeys(true)) {
+						final String masterKey = key + "." + var;
+						if(!configHandle.isConfigurationSection(masterKey)) {
+							final String masterKey2 = key2 + "." + var;
+							if(!tempConfigHandle.isSet(masterKey2)) {
+								tempConfigHandle.set(masterKey2, configHandle.get(masterKey));
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		try {
+			tempConfigHandle.save(TEMP_CONFIG_FILE);
+		} catch (IOException e) {
+			langHandler.consoleOut("TEMPLATES.ERROR.NO_UPDATE");
+			e.printStackTrace();
+		}
+		CONFIG_FILE.delete();
+		TEMP_CONFIG_FILE.renameTo(CONFIG_FILE);
+	}
 
 	public void initTemplates() {
 		if (!CONFIG_FILE.exists()) {
@@ -137,6 +177,8 @@ public class TokenManager {
 			plugin.saveResource(CONFIG_NAME, false);
 		}
 		if (CONFIG_FILE.exists()) {
+			updateTemplates();
+			
 			final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(CONFIG_FILE);
 			for (final String key : configHandle.getKeys(false)) {
 				final String type = configHandle.getString(key + ".type");

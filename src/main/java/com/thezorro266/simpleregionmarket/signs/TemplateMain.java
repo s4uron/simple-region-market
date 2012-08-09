@@ -54,7 +54,6 @@ public abstract class TemplateMain {
 		if (checkTemplate()) {
 			final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(TokenManager.CONFIG_FILE);
 
-			// TODO Merge templates with existing template file (set non-existing variables)
 			for (final String key : configHandle.getConfigurationSection(id).getKeys(true)) {
 				tplOptions.put(key, configHandle.getConfigurationSection(id).get(key));
 			}
