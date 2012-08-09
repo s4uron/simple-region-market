@@ -1,11 +1,9 @@
-name: ${project.name}
+name: SimpleRegionMarket
 version: ${majorversion}-${state}
 author: theZorro266
-website: ${project.url}
-main: ${project.groupId}.${project.artifactId}.${project.name}
-load: POSTWORLD
+main: com.thezorro266.simpleregionmarket.SimpleRegionMarket
 depend: ['WorldGuard']
-softdepend: ['Vault', 'ChestShop']
+softdepend: ['Vault']
 
 commands:
   regionmarket:
