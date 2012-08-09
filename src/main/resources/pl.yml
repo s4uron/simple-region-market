@@ -18,7 +18,7 @@ TEMPLATES:
   ERROR:
     NO_STANDARD_TEMPLATES: Nie mozna utworzyc standardowego szablonu
 CMD:
-  UNTAKE:
+  RELEASE:
     NO_ARG: 'Uzyj: /rm untake <region> - Usuwa wlascicieli oraz uzytkownikow z regionu'
     CONSOLE_NOWORLD: Musisz utworzyc swiat z konsoli.
     SUCCESS: Z regionu $0 w swiecie $1 odebrano prawa wlasciciela.

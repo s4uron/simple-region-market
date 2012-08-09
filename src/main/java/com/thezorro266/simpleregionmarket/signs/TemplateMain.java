@@ -54,6 +54,7 @@ public abstract class TemplateMain {
 		if (checkTemplate()) {
 			final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(TokenManager.CONFIG_FILE);
 
+			// TODO Merge templates with existing template file (set non-existing variables)
 			for (final String key : configHandle.getConfigurationSection(id).getKeys(true)) {
 				tplOptions.put(key, configHandle.getConfigurationSection(id).get(key));
 			}
@@ -217,7 +218,7 @@ public abstract class TemplateMain {
 			list.add(region);
 			list.add(newOwner.getName());
 			langHandler.playerNormalOut(oldOwner, "PLAYER.REGION.JUST_TAKEN_BY", list);
-			untakeRegion(world, region);
+			releaseRegion(world, region);
 		} else {
 			// Clear Members and Owners
 			protectedRegion.setMembers(new DefaultDomain());
@@ -250,7 +251,7 @@ public abstract class TemplateMain {
 		tokenManager.updateSigns(this, world, region);
 	}
 
-	public void untakeRegion(String world, String region) {
+	public void releaseRegion(String world, String region) {
 		final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
 
 		// Clear Members and Owners
@@ -319,6 +320,14 @@ public abstract class TemplateMain {
 
 		tokenManager.updateSigns(this, world, region);
 		return true;
+	}
+	
+	public boolean canAddMember() {
+		return Utils.getOptionBoolean(this, "addmember");
+	}
+	
+	public boolean canAddOwner() {
+		return Utils.getOptionBoolean(this, "addowner");
 	}
 
 	public void schedule(String world, String region) {

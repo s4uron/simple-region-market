@@ -39,7 +39,7 @@ public class TemplateLet extends TemplateMain {
 			list.add(region);
 			list.add(newOwner.getName());
 			langHandler.playerNormalOut(oldOwner, "PLAYER.REGION.JUST_TAKEN_BY", list);
-			untakeRegion(world, region);
+			releaseRegion(world, region);
 		} else {
 			// Clear Members and Owners
 			protectedRegion.setMembers(new DefaultDomain());
@@ -60,7 +60,7 @@ public class TemplateLet extends TemplateMain {
 	}
 
 	@Override
-	public void untakeRegion(String world, String region) {
+	public void releaseRegion(String world, String region) {
 		final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
 
 		// Clear Members and Owners
@@ -157,6 +157,11 @@ public class TemplateLet extends TemplateMain {
 		}
 		return replacementMap;
 	}
+	
+	@Override
+	public boolean canAddOwner() {
+		return false;
+	}
 
 	@Override
 	public void schedule(String world, String region) {
@@ -183,7 +188,7 @@ public class TemplateLet extends TemplateMain {
 						langHandler.playerNormalOut(player, "PLAYER.REGION.EXPIRED", list);
 					}
 				}
-				untakeRegion(world, region);
+				releaseRegion(world, region);
 			}
 		}
 	}

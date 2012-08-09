@@ -18,7 +18,7 @@ TEMPLATES:
   ERROR:
     NO_STANDARD_TEMPLATES: Nije moguce napraviti standardne sablone
 CMD:
-  UNTAKE:
+  RELEASE:
     NO_ARG: 'Komanda: /rm untake <region> - Uklanja vlasnike i clanove iz regiona'
   REMOVE:
     NO_ARG: 'Komanda: /rm rem <region> - Uklanja region iz sistema'

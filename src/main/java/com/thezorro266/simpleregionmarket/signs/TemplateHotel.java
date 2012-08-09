@@ -59,7 +59,7 @@ public class TemplateHotel extends TemplateLet {
 						langHandler.playerNormalOut(player, "PLAYER.REGION.EXPIRED", list);
 					}
 				}
-				untakeRegion(world, region);
+				releaseRegion(world, region);
 			}
 		}
 	}

@@ -2,6 +2,8 @@ sell:
   type: sell
   removesigns: false
   buyer: owner
+  addmember: true
+  addowner: false
   price.min: 0
   price.max: -1
   input.id: '[SELL]'
@@ -20,6 +22,7 @@ sell:
   taken.4: ''
 let:
   type: let
+  addmember: false
   price.min: 0
   price.max: -1
   renttime.min: 60000
@@ -40,6 +43,7 @@ let:
   taken.4: '[[player]]'
 hotel:
   type: hotel
+  addmember: false
   price.min: 0
   price.max: -1
   renttime.min: 60000

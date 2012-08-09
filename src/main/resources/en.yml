@@ -20,13 +20,29 @@ TEMPLATES:
 COMMON:
   CONSOLE_NOWORLD: You have to give the world in the console
   NO_REGION: Region $0 was not found in world $1.
+  NO_PLAYER: The given player was not found.
+  NO_WORLD: The given world was not found.
 CMD:
-  UNTAKE:
-    NO_ARG: 'Usage: /rm untake <region> (<world>)- Removes the owners and members from the region'
-    SUCCESS: Region $0 in world $1 has been untaken.
+  RELEASE:
+    NO_ARG: 'Usage: /rm release <region> (<world>) - Removes the owners and members from the region'
+    SUCCESS: Region $0 in world $1 has been released.
   REMOVE:
     NO_ARG: 'Usage: /rm remove <region> (<world>) - Removes the region out of the system'
     SUCCESS: Region $0 in world $1 has been removed.
+  ADDMEMBER:
+    NO_ARG: 'Usage: /rm addmember <player> <region> (<world>) - Adds the player as a member to the region'
+    SUCCESS: Added $0 to the region $1 in world $2 as member.
+    NO_ADDMEMBER: Members cannot be added nor removed to or from this region.
+  REMOVEMEMBER:
+    NO_ARG: 'Usage: /rm removemember <player> <region> (<world>) - Removes the member from the region'
+    SUCCESS: Removed the member $0 from the region $1 in world $2.
+  ADDOWNER:
+    NO_ARG: 'Usage: /rm addowner <player> <region> (<world>) - Adds the player as an owner to the region'
+    SUCCESS: Added $0 to the region $1 in world $2 as owner.
+    NO_ADDOWNER: Owners cannot be added nor removed to or from this region.
+  REMOVEOWNER:
+    NO_ARG: 'Usage: /rm removeowner <player> <region> (<world>) - Removes the owner from the region'
+    SUCCESS: Removed the owner $0 from the region $1 in world $2.
 PLAYER:
   ERROR:
     ECO_PROBLEM: There was a problem with transfering the money.
@@ -44,6 +60,8 @@ PLAYER:
     NORM: You do not have permission to do this.
     BUY: You do not have the permission to buy that region.
     SELL: You do not have the permission to sell that region.
+    ADDMEMBER: You do not have the permission to add a member to that region.
+    ADDOWNER: You do not have the permission to add an owner to that region.
   REGION:
     YOURS: This is your region.
     BOUGHT: You successfully bought the region $0.
