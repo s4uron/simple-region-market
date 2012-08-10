@@ -135,6 +135,10 @@ footer a:hover {
   text-shadow: #0090ff 0px 0px 2px;
 }
 
+a:hover {
+  cursor: pointer;
+}
+
 em {
   font-style: italic;
 }
@@ -366,6 +370,14 @@ Full-Width Styles
 
 #main_content {
   padding-top: 40px;
+}
+
+#documentation {
+  font-size: 14px;
+  line-height: 1.2em;
+  width: 420px;
+  height: 240px;
+  background: silver;
 }
 
 #footer_wrap {

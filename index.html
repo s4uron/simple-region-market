@@ -4,10 +4,14 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Simple Region Market : Simple Region Market - A Bukkit plugin" />
+    <meta name="description" content="Simple Region Market - A Bukkit plugin" />
+    
+    <script language="JavaScript" src="javascripts/jquery-1.7.2.min.js"></script>
+    <script language="JavaScript" src="javascripts/jquery-ui-1.8.22.custom.min.js"></script>
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/ui-lightness/jquery-ui-1.8.22.custom.css">
+    
     <title>Simple Region Market</title>
   </head>
 
@@ -30,57 +34,77 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h2>Recent news</h2>
+        <h1><a onclick="$('#documentation').dialog('open');">Open Documentation</a></h1>
+        
+        <div id="documentation">
+          <h2>Standard Templates</h2>
+          
+          <p>You can define templates in your 'templates.yml'. That means you can change names, create new types and set time or pricing limits.</p>
+          
+          <h3>[SELL]</h3>
+          
+          <p>For selling regions.<br>The buyer will be owner if nothing else is defined in the templates file.</p>
+          
+          <p align="center"><img style="width: 320px;" src="images/sell.png" alt="[SELL]"></p>
+          
+          <h3>[LET]</h3>
+          
+          <p>For renting out regions.<br>The renter will be member and the rent will be automatically extended, if the renter has got enough money. If the renter hasn't got enough money, the region will be released directly.</p>
+          
+          <p align="center"><img style="width: 320px;" src="images/let.png" alt="[LET]"></p>
+          
+          <h3>[HOTEL]</h3>
+          
+          <p>For renting out regions.<br>The renter will be member and needs to reclick the sign (and therefor repay), if he wants to extend his time on the region. If the time runs out, the region will be released directly.</p>
+          
+          <p align="center"><img style="width: 320px;" src="images/hotel.png" alt="[HOTEL]"></p>
+          
+          <h2>Permissions</h2>
+          
+          <p>Other permissions than <code>simpleregionmarket.admin</code> can be set for all templates you define. That means (replace name with the name of the template):</p>
 
-<p><a href="http://repo.thezorro266.com/releases/com/thezorro266/simpleregionmarket/2.1.1/simpleregionmarket-2.1.1.jar"><strong>Version 2.1.1</strong></a></p>
+          <ul>
+            <li><code>simpleregionmarket.<em>name</em>.take</code> - Permission to let a player buy/rent a region</li>
+            <li><code>simpleregionmarket.<em>name</em>.offer</code> - Permission to let a player sell/let a region</li>
+            <li><code>simpleregionmarket.<em>name</em>.addmember</code> - Permission to let a player add/remove members to/from his regions</li>
+            <li><code>simpleregionmarket.<em>name</em>.addowner</code> - Permission to let a player add/remove owners to/from his regions</li>
+          </ul>
+          
+          <h2>Limits</h2>
+        
+          <p>You can set limits when you create the limits.yml manually (example below; use the YAML format; -1 means often infinite; If you dont know how: Let it).</p>
 
-<p>As there is still no version by the team here, I released a new version.</p>
+          <p>limits.yml (name means the name of the template; world means the world; etc.)</p>
 
-<p>This version is stable. /rm limits and /rm list does not work yet. You can set limits when you create the limits.yml manually (example below; use the YAML format; -1 means often infinite; If you dont know how: Let it).</p>
+          <ul>
+            <li><code>global.global</code> - Global limit</li>
+            <li><code><em>name</em>.global</code> - Global template limit</li>
+            <li><code>global.world.<em>world</em></code> - Global world limit</li>
+            <li><code><em>name</em>.world.<em>world</em></code> - Template world limit</li>
+            <li><code>global.parentregion.<em>parentregion</em></code> - Global limit by parentregion (NOT priority)</li>
+            <li><code><em>name</em>.parentregion.<em>parentregion</em></code> - Template limit by parentregion</li>
+          </ul>
+        </div>
+      
+        <h2><a href="http://repo.thezorro266.com/releases/com/thezorro266/simpleregionmarket/2.1.1/simpleregionmarket-2.1.1.jar">Version 2.1.1</a></h2>
+        
+        <p>This version is stable. /rm limits and /rm list does not work yet.</p>
+        
+        <h3>Thanks to </h3>
+        
+        <p><small>(the ones who made me making the update)</small></p>
+        
+        <ul>
+        <li>Craig Baines (TrioCraft)</li>
+        <li>David Miller (AegisCraft)</li>
+        </ul>
+        
+        <h3>Recent changes:</h3>
 
-<p>limits.yml (name means the name of the template; world means the world; etc.)</p>
-
-<ul>
-<li>global.global - Global limit</li>
-<li>
-<em>name</em>.global - Global template limit</li>
-<li>global.world.<em>world</em> - Global world limit</li>
-<li>
-<em>name</em>.world.<em>world</em> - Template world limit</li>
-<li>global.parentregion.<em>parentregion</em> - Global limit by parentregion (NOT priority)</li>
-<li>
-<em>name</em>.parentregion.<em>parentregion</em> - Template limit by parentregion</li>
-</ul><p>Thanks to (the ones who made me making the update):</p>
-
-<ul>
-<li>Craig Baines (TrioCraft)</li>
-<li>David Miller (AegisCraft)</li>
-</ul><h3>Recent changes:</h3>
-
-<ul>
-<li>addmember, removemember &amp; addowner, removeowner functionality</li>
-<li>templates.yml will be automatically updated</li>
-</ul><h2>Licensing</h2>
-
-<p><em>LICENSED under <a href="http://sam.zoy.org/wtfpl/COPYING">WTFPL v2</a></em></p>
-
-<h3>This software has the following hard dependencies:</h3>
-
-<ul>
-<li>Bukkit - <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a>
-</li>
-<li>WorldGuard - <a href="http://www.gnu.org/licenses/lgpl-3.0.html">GNU LGPLv3</a>
-</li>
-<li>WorldEdit - <a href="http://www.gnu.org/licenses/lgpl-3.0.html">GNU LGPLv3</a>
-</li>
-</ul><h3>This software has the following other dependencies:</h3>
-
-<ul>
-<li>Vault - <a href="http://www.gnu.org/licenses/lgpl-3.0.html">GNU LGPLv3</a>
-</li>
-<li>Register - <a href="http://aol.nexua.org">AOL v.a3</a>
-</li>
-</ul>
+        <ul>
+        <li>addmember, removemember &amp; addowner, removeowner functionality</li>
+        <li>templates.yml will be automatically updated</li>
+        </ul>
       </section>
     </div>
 
@@ -91,8 +115,21 @@
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-
     
-
+    <script>        
+        $('#documentation').dialog({
+            title: "Documentation",
+            autoOpen: false,
+            width: 600,
+            height: 500,
+            maxWidth: 1200,
+            maxHeight: 800,
+            buttons: {
+                "Close": function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    </script>
   </body>
 </html>
