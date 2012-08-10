@@ -373,11 +373,19 @@ Full-Width Styles
 }
 
 #documentation {
-  font-size: 14px;
-  line-height: 1.2em;
+  font-size: 0.8em;
   width: 420px;
   height: 240px;
-  background: silver;
+  background: none repeat scroll 0 0 #F2F2F2
+}
+
+#documentation h1, #documentation h2, #documentation h3, #documentation h4 {
+  line-height: 1.2em;
+}
+
+#documentation li {
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 #footer_wrap {
