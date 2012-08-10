@@ -36,8 +36,8 @@ let:
   input:
     id: '[LET]'
     '2': '[[region]]'
-    '3': '[[price]]'
-    '4': '[[time]]'
+    '3': '[[price]]:[[time]]'
+    '4': '[[account]]'
   output:
     id: FOR RENT
     '1': '[[id_out]]'
@@ -62,8 +62,8 @@ hotel:
   input:
     id: '[HOTEL]'
     '2': '[[region]]'
-    '3': '[[price]]'
-    '4': '[[time]]'
+    '3': '[[price]]:[[time]]'
+    '4': '[[account]]'
   output:
     id: FOR RENT
     '1': '[[id_out]]'

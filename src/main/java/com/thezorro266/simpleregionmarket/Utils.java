@@ -40,12 +40,34 @@ public class Utils {
 	public static HashMap<String, String> getSignInput(TemplateMain token, String[] lines) {
 		final HashMap<String, String> hashMap = new HashMap<String, String>();
 		for (int i = 0; i < lines.length; i++) {
-			final String inputLine = Utils.getOptionString(token, "input." + (i + 1));
-			if (inputLine != null) {
-				final Pattern pattern = Pattern.compile("\\[\\[(.+?)\\]\\]");
-				final Matcher matcher = pattern.matcher(inputLine);
-				while (matcher.find()) {
-					hashMap.put(matcher.group(1), lines[i]);
+			String inputLine = Utils.getOptionString(token, "input." + (i + 1));
+			if (inputLine != null && !inputLine.isEmpty()) {
+
+				Pattern pattern = Pattern.compile("\\[\\[(.+?)\\]\\]");
+				Matcher matcher = pattern.matcher(inputLine);
+				String newPattern = "";
+				ArrayList<String> keys = new ArrayList<String>();
+				while(matcher.find()) {
+					for(int u=0; u < matcher.groupCount(); u++) {
+						keys.add(matcher.group(u+1));
+					}
+				}
+				newPattern = matcher.replaceAll("(.+)");
+
+				pattern = Pattern.compile(newPattern);
+				matcher = pattern.matcher(lines[i]);
+				ArrayList<String> vars = new ArrayList<String>();
+				while(matcher.find()) {
+					for(int u=0; u < matcher.groupCount(); u++) {
+						vars.add(matcher.group(u+1));
+					}
+				}
+				for(int u = 0; u < keys.size(); u++) {
+					if(u < vars.size()) {
+						hashMap.put(keys.get(u), vars.get(u));;
+					} else {
+						hashMap.put(keys.get(u), "");
+					}
 				}
 			}
 		}

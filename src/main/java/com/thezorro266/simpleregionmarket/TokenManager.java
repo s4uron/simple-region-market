@@ -269,7 +269,7 @@ public class TokenManager {
 	public boolean playerCreatedSign(Player player, TemplateMain token, Location signLocation, String[] lines) {
 		final String world = signLocation.getWorld().getName();
 		final HashMap<String, String> input = Utils.getSignInput(token, lines);
-		final ProtectedRegion protectedRegion = Utils.getProtectedRegion(input.get("region").toString(), signLocation);
+		ProtectedRegion protectedRegion = Utils.getProtectedRegion(input.get("region").toString(), signLocation);
 
 		if (protectedRegion == null) {
 			langHandler.playerErrorOut(player, "PLAYER.ERROR.NO_REGION", null);
