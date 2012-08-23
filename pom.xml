@@ -24,8 +24,8 @@
   </scm>
   
   <issueManagement>
-    <system>Own</system>
-    <url>http://www.thezorro266.com/plugin-simpleregionmarket-ticket.html</url>
+    <system>GitHub</system>
+    <url>https://github.com/theZorro266/simple-region-market/issues</url>
   </issueManagement>
   
   <distributionManagement>
@@ -81,6 +81,18 @@
   </dependencies>
   
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+	</plugins>
+	
     <resources>
       <resource>
         <directory>${project.basedir}/src/main/resources</directory>
@@ -96,4 +108,8 @@
       </extension>
     </extensions>
   </build>
+  <ciManagement>
+  	<system>Jenkins</system>
+  	<url>http://ci.thezorro266.com/job/SimpleRegionMarket/</url>
+  </ciManagement>
 </project>

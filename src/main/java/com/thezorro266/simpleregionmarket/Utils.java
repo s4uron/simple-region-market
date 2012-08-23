@@ -229,10 +229,12 @@ public class Utils {
 		if (region == null || region.isEmpty()) {
 			if (worldRegionManager.getApplicableRegions(signLocation).size() == 1) {
 				protectedRegion = worldRegionManager.getApplicableRegions(signLocation).iterator().next();
+			} else {
+				// TODO Take child region or region with highest priority
 			}
 		} else {
 			protectedRegion = worldRegionManager.getRegion(region);
-		} // TODO Take child region or region with highest priority
+		}
 		return protectedRegion;
 	}
 
