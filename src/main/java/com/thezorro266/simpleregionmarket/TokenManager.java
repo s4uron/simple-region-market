@@ -231,27 +231,35 @@ public class TokenManager {
 					// Limits
 					if (SimpleRegionMarket.limitHandler.checkPlayerGlobal(player)) {
 						if (SimpleRegionMarket.limitHandler.checkPlayerToken(player, token)) {
-							if (SimpleRegionMarket.limitHandler.checkPlayerGlobalWorld(player, world)) {
-								if (SimpleRegionMarket.limitHandler.checkPlayerTokenWorld(player, token, world)) {
-									final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
-									if (protectedRegion == null || protectedRegion.getParent() == null) {
-										token.otherClicksSign(player, world, region);
-									} else {
-										if (SimpleRegionMarket.limitHandler.checkPlayerGlobalRegion(player, protectedRegion.getParent())) {
-											if (SimpleRegionMarket.limitHandler.checkPlayerTokenRegion(player, token, protectedRegion.getParent())) {
+							if (SimpleRegionMarket.limitHandler.checkPlayerGlobalPlayer(player)) {
+								if (SimpleRegionMarket.limitHandler.checkPlayerTokenPlayer(player, token)) {
+									if (SimpleRegionMarket.limitHandler.checkPlayerGlobalWorld(player, world)) {
+										if (SimpleRegionMarket.limitHandler.checkPlayerTokenWorld(player, token, world)) {
+											final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
+											if (protectedRegion == null || protectedRegion.getParent() == null) {
 												token.otherClicksSign(player, world, region);
 											} else {
-												langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_PARENTREGION", null);
+												if (SimpleRegionMarket.limitHandler.checkPlayerGlobalRegion(player, protectedRegion.getParent())) {
+													if (SimpleRegionMarket.limitHandler.checkPlayerTokenRegion(player, token, protectedRegion.getParent())) {
+														token.otherClicksSign(player, world, region);
+													} else {
+														langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_PARENTREGION", null);
+													}
+												} else {
+													langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_PARENTREGION", null);
+												}
 											}
 										} else {
-											langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_PARENTREGION", null);
+											langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_WORLD", null);
 										}
+									} else {
+										langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_WORLD", null);
 									}
 								} else {
-									langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_WORLD", null);
+									langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_PLAYER", null);
 								}
 							} else {
-								langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_WORLD", null);
+								langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_PLAYER", null);
 							}
 						} else {
 							langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN", null);

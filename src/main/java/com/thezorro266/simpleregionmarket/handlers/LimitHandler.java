@@ -44,6 +44,20 @@ public class LimitHandler {
 		return true;
 	}
 
+	public boolean checkPlayerGlobalPlayer(Player player) {
+		if (getLimitEntry("global.player." + player.getName()) != -1) {
+			return (countPlayerGlobalPlayerRegions(player) < getLimitEntry("global.player." + player.getName()));
+		}
+		return true;
+	}
+
+	public boolean checkPlayerTokenPlayer(Player player, TemplateMain token) {
+		if (getLimitEntry(token.id + ".player." + player.getName()) != -1) {
+			return (countPlayerPlayerRegions(player, token) < getLimitEntry(token.id + ".player." + player.getName()));
+		}
+		return true;
+	}
+
 	public boolean checkPlayerGlobalWorld(Player player, String world) {
 		if (getLimitEntry("global.world." + world) != -1) {
 			return (countPlayerGlobalWorldRegions(player, world) < getLimitEntry("global.world." + world));
@@ -127,6 +141,43 @@ public class LimitHandler {
 			if (protectedRegion != null) {
 				if (token.isRegionOwner(player, world, region)) {
 					count++;
+				}
+			}
+		}
+		return count;
+	}
+	
+	/**
+	 * Returns a global count for regions in world, where player is owner
+	 * 
+	 * @param player
+	 * @param world
+	 * @return the count of all regions in the world owned by the player
+	 */
+	public int countPlayerGlobalPlayerRegions(Player player) {
+		int count = 0;
+		for (final TemplateMain token : TokenManager.tokenList) {
+			count += countPlayerPlayerRegions(player, token);
+		}
+		return count;
+	}
+	
+	/**
+	 * Returns a global count for regions in world, where player is owner
+	 * 
+	 * @param player
+	 * @param world
+	 * @return the count of all regions in the world owned by the player
+	 */
+	public int countPlayerPlayerRegions(Player player, TemplateMain token) {
+		int count = 0;
+		for (final String world : token.entries.keySet()) {
+			for (final String region : token.entries.get(world).keySet()) {
+				final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
+				if (protectedRegion != null) {
+					if (token.isRegionOwner(player, world, region)) {
+						count++;
+					}
 				}
 			}
 		}

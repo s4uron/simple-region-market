@@ -78,6 +78,8 @@ PLAYER:
   LIMITS:
     GLOBAL: You have reached the global region limit.
     TOKEN: You have reached the token region limit.
+    GLOBAL_PLAYER: You have reached the global region limit for your player.
+    TOKEN_PLAYER: You have reached the token region limit for your player.
     GLOBAL_WORLD: You have reached the global region limit in this world.
     TOKEN_WORLD: You have reached the token region limit in this world.
     GLOBAL_PARENTREGION: You have reached the global region limit for this parent region.
