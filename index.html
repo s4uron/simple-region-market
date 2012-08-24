@@ -5,12 +5,9 @@
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="Simple Region Market - A Bukkit plugin" />
-    
-    <script language="JavaScript" src="javascripts/jquery-1.7.2.min.js"></script>
-    <script language="JavaScript" src="javascripts/jquery-ui-1.8.22.custom.min.js"></script>
+	<meta http-equiv="refresh" content="5; URL=http://srm.thezorro266.com/">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/ui-lightness/jquery-ui-1.8.22.custom.css">
     
     <title>Simple Region Market</title>
   </head>
@@ -20,168 +17,24 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/theZorro266/simple-region-market">View on GitHub</a>
-
           <h1 id="project_title">Simple Region Market</h1>
           <h2 id="project_tagline">Simple Region Market - A Bukkit plugin</h2>
-
-            <section id="downloads">
-              <a class="download_link" href="http://repo.thezorro266.com/releases/com/thezorro266/simpleregionmarket/2.1.4/simpleregionmarket-2.1.4.jar"><span>Download</span><span>2.1.4</span></a>
-            </section>
         </header>
     </div>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1><a onclick="$('#documentation').dialog('open');">Open Documentation</a></h1>
-        
-        <div id="documentation">
-          <h2>Standard Templates</h2>
-          
-          <p>You can define templates in your 'templates.yml'. That means you can change names, create new types and set time or pricing limits.</p>
-          
-          <h3>[SELL]</h3>
-          
-          <p>For selling regions.<br>The buyer will be owner if nothing else is defined in the templates file.</p>
-          
-          <p align="center"><img style="width: 320px;" src="images/sell.png" alt="[SELL]"></p>
-          
-          <h3>[LET]</h3>
-          
-          <p>For renting out regions.<br>The renter will be member and the rent will be automatically extended, if the renter has got enough money. If the renter hasn't got enough money, the region will be released directly.</p>
-          
-          <p align="center"><img style="width: 320px;" src="images/let.png" alt="[LET]"></p>
-          
-          <h3>[HOTEL]</h3>
-          
-          <p>For renting out regions.<br>The renter will be member and needs to reclick the sign (and therefor repay), if he wants to extend his time on the region. If the time runs out, the region will be released directly.</p>
-          
-          <p align="center"><img style="width: 320px;" src="images/hotel.png" alt="[HOTEL]"></p>
-          
-          <h2>Permissions</h2>
-          
-          <p>Other permissions than <code>simpleregionmarket.admin</code> can be set for all templates you define. That means (replace name with the name of the template):</p>
-
-          <ul>
-            <li><code>simpleregionmarket.<em>name</em>.take</code> - Permission to let a player buy/rent a region</li>
-            <li><code>simpleregionmarket.<em>name</em>.offer</code> - Permission to let a player sell/let a region</li>
-            <li><code>simpleregionmarket.<em>name</em>.addmember</code> - Permission to let a player add/remove members to/from his regions</li>
-            <li><code>simpleregionmarket.<em>name</em>.addowner</code> - Permission to let a player add/remove owners to/from his regions</li>
-          </ul>
-          
-          <h2>Limits</h2>
-        
-          <p>You can set limits when you create the limits.yml manually (example below; use the YAML format; -1 means often infinite; If you dont know how: Let it).</p>
-
-          <p>limits.yml (name means the name of the template; world means the world; etc.)</p>
-
-          <ul>
-            <li><code>global.global</code> - Global limit</li>
-            <li><code><em>name</em>.global</code> - Global template limit</li>
-			<li><code>global.player.<em>playername</em></code> - Global player limit</li>
-			<li><code><em>name</em>.player.<em>playername</em></code> - Template player limit</li>
-            <li><code>global.world.<em>world</em></code> - Global world limit</li>
-            <li><code><em>name</em>.world.<em>world</em></code> - Template world limit</li>
-            <li><code>global.parentregion.<em>parentregion</em></code> - Global limit by parentregion (NOT priority)</li>
-            <li><code><em>name</em>.parentregion.<em>parentregion</em></code> - Template limit by parentregion</li>
-          </ul>
-        </div>
-		
-        <h2><a href="http://repo.thezorro266.com/releases/com/thezorro266/simpleregionmarket/2.1.4/simpleregionmarket-2.1.4.jar">Version 2.1.4</a></h2>
-        
-        <h3>Changes:</h3>
-
-        <ul>
-        <li>Fixed hotels and maximum renttime in templates</li>
-		</ul>
-		
-        <h2><a href="http://repo.thezorro266.com/releases/com/thezorro266/simpleregionmarket/2.1.3/simpleregionmarket-2.1.3.jar">Version 2.1.3</a></h2>
-        
-        <h3>Changes:</h3>
-
-        <ul>
-        <li>Added new limits <code>global.player.<em>playername</em></code> and <code><em>name</em>.player.<em>playername</em></code></li>
-        <li>Fixed a bug when expanding regions</li>
-		</ul>
-        
-        <h2><a href="http://repo.thezorro266.com/releases/com/thezorro266/simpleregionmarket/2.1.2/simpleregionmarket-2.1.2.jar">Version 2.1.2</a></h2>
-        
-        <h3>Changes:</h3>
-
-        <ul>
-        <li>Templates can now use <code>[[price]]:[[time]]</code></li>
-        <li>Changes LET and HOTEL to use <code>[[price]]:[[time]]</code> and added <code>[[account]]</code> in the last line</li>
-        </ul>
-      
-        <h2><a href="http://repo.thezorro266.com/releases/com/thezorro266/simpleregionmarket/2.1.1/simpleregionmarket-2.1.1.jar">Version 2.1.1</a></h2>
-        
-        <p>This version is stable. /rm limits and /rm list does not work yet.</p>        
-        
-        <h3>Changes:</h3>
-
-        <ul>
-        <li>addmember, removemember &amp; addowner, removeowner functionality</li>
-        <li>templates.yml will be automatically updated</li>
-        </ul>
-        
-        <h2><a id="thanks-toggle" onclick="$('#thanks').toggle('slow');">Thanks to...</a></h2>
-        
-        <div id="thanks">
-          <ul>
-          <li>David Böken</li>
-          <li>Craig Baines</li>
-          <li>David Miller</li>
-          <li>Chris Stone</li>
-          <li>Conner Hogue</li>
-          <li>James Johnson</li>
-          <li>Joe Weldon</li>
-          <li>Matt Altheim</li>
-          <li>Charlie Luck</li>
-          <li>Bradon Brandon</li>
-          <li>Hiu Keung</li>
-          <li>Mark Woodman</li>
-          <li>Jose "Eltake"</li>
-          <li>Shadowfink</li>
-          <li>Vexro</li>
-          <li>Flying Kanga</li>
-          <li>CaliMale</li>
-          <li>Momo Nasty</li>
-          <li>TwisT</li>
-          <li>Themightysheep (Sam)</li>
-          <li>Sergeant</li>
-          <li>Alex (Alz_07)</li>
-          <li>TrioCraft</li>
-          <li>AegisCraft</li>
-          <li>RealmCraft (The only server I <b>really</b> played on)</li>
-          </ul>
-        </div>
+        <h1>You will be redirected to the new server...</h1>
       </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Simple Region Market maintained by <a href="https://github.com/theZorro266">theZorro266</a><span style="font-size: small; float: right;">Last Updated: 2012/08/24</span></p>
+        <p class="copyright">Simple Region Market maintained by <a href="https://github.com/theZorro266">theZorro266</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    
-    <script>        
-        $('#documentation').dialog({
-            title: "Documentation",
-            autoOpen: false,
-            width: 600,
-            height: 500,
-            maxWidth: 1200,
-            maxHeight: 800,
-            buttons: {
-                "Close": function() {
-                    $(this).dialog("close");
-                }
-            }
-        });
-        $('#thanks').hide();
-    </script>
   </body>
 </html>
