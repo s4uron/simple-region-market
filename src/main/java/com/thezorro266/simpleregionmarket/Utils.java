@@ -253,6 +253,8 @@ public class Utils {
 		final int hours = (int) (time / (60 * 60));
 		time = time % (60 * 60);
 		final int minutes = (int) (time / 60);
+		time = time % (60);
+		final int seconds = (int) time;
 		String strReturn = "< 1 min";
 		if (days > 0) {
 			strReturn = Integer.toString(days);
@@ -276,6 +278,9 @@ public class Utils {
 			}
 		} else if (minutes > 0) {
 			strReturn = Integer.toString(minutes);
+			if (seconds > 0) {
+				strReturn += "+";
+			}
 			if (minutes == 1) {
 				strReturn += " min";
 			} else {

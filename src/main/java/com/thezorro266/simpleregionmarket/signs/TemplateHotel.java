@@ -21,10 +21,9 @@ public class TemplateHotel extends TemplateLet {
 
 	@Override
 	public void ownerClicksTakenSign(String world, String region) {
-		final long newRentTime = Utils.getEntryLong(this, world, region, "expiredate") + Utils.getEntryLong(this, world, region, "renttime");
+		final long newExpiredate = Utils.getEntryLong(this, world, region, "expiredate") + Utils.getEntryLong(this, world, region, "renttime");
 		final Player owner = Bukkit.getPlayer(Utils.getEntryString(this, world, region, "owner"));
-		if (Utils.getOptionLong(this, "renttime.max") != -1
-				|| (newRentTime - System.currentTimeMillis()) / Utils.getEntryLong(this, world, region, "renttime") < Utils.getOptionLong(this, "renttime.max")) {
+		if (Utils.getOptionLong(this, "renttime.max") == -1 || (newExpiredate - System.currentTimeMillis()) < Utils.getOptionLong(this, "renttime.max")) {
 			if (SimpleRegionMarket.econManager.isEconomy()) {
 				String account = Utils.getEntryString(this, world, region, "account");
 				if (account.isEmpty()) {
@@ -32,12 +31,12 @@ public class TemplateHotel extends TemplateLet {
 				}
 				final double price = Utils.getEntryDouble(this, world, region, "price");
 				if (SimpleRegionMarket.econManager.moneyTransaction(Utils.getEntryString(this, world, region, "owner"), account, price)) {
-					Utils.setEntry(this, world, region, "expiredate", newRentTime);
+					Utils.setEntry(this, world, region, "expiredate", newExpiredate);
 					tokenManager.updateSigns(this, world, region);
 					langHandler.playerNormalOut(owner, "PLAYER.REGION.ADDED_RENTTIME", null);
 				}
 			} else {
-				Utils.setEntry(this, world, region, "expiredate", newRentTime);
+				Utils.setEntry(this, world, region, "expiredate", newExpiredate);
 				tokenManager.updateSigns(this, world, region);
 				langHandler.playerNormalOut(owner, "PLAYER.REGION.ADDED_RENTTIME", null);
 			}
