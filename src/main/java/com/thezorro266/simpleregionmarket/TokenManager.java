@@ -134,25 +134,25 @@ public class TokenManager {
 		}
 		return count;
 	}
-	
+
 	public void updateTemplates() {
-		if(TEMP_CONFIG_FILE.exists()) {
+		if (TEMP_CONFIG_FILE.exists()) {
 			TEMP_CONFIG_FILE.delete();
 		}
 		CONFIG_FILE.renameTo(TEMP_CONFIG_FILE);
 		plugin.saveResource(CONFIG_NAME, false);
-		
+
 		final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(CONFIG_FILE);
 		final YamlConfiguration tempConfigHandle = YamlConfiguration.loadConfiguration(TEMP_CONFIG_FILE);
 		for (final String key : configHandle.getKeys(false)) {
 			final String type = configHandle.getString(key + ".type");
-			for(final String key2 : tempConfigHandle.getKeys(false)) {
-				if(type.equalsIgnoreCase(tempConfigHandle.getString(key2 + ".type"))) {
-					for(final String var : configHandle.getConfigurationSection(key).getKeys(true)) {
+			for (final String key2 : tempConfigHandle.getKeys(false)) {
+				if (type.equalsIgnoreCase(tempConfigHandle.getString(key2 + ".type"))) {
+					for (final String var : configHandle.getConfigurationSection(key).getKeys(true)) {
 						final String masterKey = key + "." + var;
-						if(!configHandle.isConfigurationSection(masterKey)) {
+						if (!configHandle.isConfigurationSection(masterKey)) {
 							final String masterKey2 = key2 + "." + var;
-							if(!tempConfigHandle.isSet(masterKey2)) {
+							if (!tempConfigHandle.isSet(masterKey2)) {
 								tempConfigHandle.set(masterKey2, configHandle.get(masterKey));
 							}
 						}
@@ -160,10 +160,10 @@ public class TokenManager {
 				}
 			}
 		}
-		
+
 		try {
 			tempConfigHandle.save(TEMP_CONFIG_FILE);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			langHandler.consoleOut("TEMPLATES.ERROR.NO_UPDATE");
 			e.printStackTrace();
 		}
@@ -178,7 +178,7 @@ public class TokenManager {
 		}
 		if (CONFIG_FILE.exists()) {
 			updateTemplates();
-			
+
 			final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(CONFIG_FILE);
 			for (final String key : configHandle.getKeys(false)) {
 				final String type = configHandle.getString(key + ".type");
@@ -235,7 +235,8 @@ public class TokenManager {
 								if (SimpleRegionMarket.limitHandler.checkPlayerTokenPlayer(player, token)) {
 									if (SimpleRegionMarket.limitHandler.checkPlayerGlobalWorld(player, world)) {
 										if (SimpleRegionMarket.limitHandler.checkPlayerTokenWorld(player, token, world)) {
-											final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
+											final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world),
+													region);
 											if (protectedRegion == null || protectedRegion.getParent() == null) {
 												token.otherClicksSign(player, world, region);
 											} else {
@@ -277,7 +278,7 @@ public class TokenManager {
 	public boolean playerCreatedSign(Player player, TemplateMain token, Location signLocation, String[] lines) {
 		final String world = signLocation.getWorld().getName();
 		final HashMap<String, String> input = Utils.getSignInput(token, lines);
-		ProtectedRegion protectedRegion = Utils.getProtectedRegion(input.get("region").toString(), signLocation);
+		final ProtectedRegion protectedRegion = Utils.getProtectedRegion(input.get("region").toString(), signLocation);
 
 		if (protectedRegion == null) {
 			langHandler.playerErrorOut(player, "PLAYER.ERROR.NO_REGION", null);

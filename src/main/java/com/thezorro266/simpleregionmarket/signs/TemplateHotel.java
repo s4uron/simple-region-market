@@ -1,7 +1,6 @@
 package com.thezorro266.simpleregionmarket.signs;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -33,12 +32,12 @@ public class TemplateHotel extends TemplateLet {
 				}
 				final double price = Utils.getEntryDouble(this, world, region, "price");
 				if (SimpleRegionMarket.econManager.moneyTransaction(Utils.getEntryString(this, world, region, "owner"), account, price)) {
-					Utils.setEntry(this, world, region, "expiredate", new Date(newRentTime));
+					Utils.setEntry(this, world, region, "expiredate", newRentTime);
 					tokenManager.updateSigns(this, world, region);
 					langHandler.playerNormalOut(owner, "PLAYER.REGION.ADDED_RENTTIME", null);
 				}
 			} else {
-				Utils.setEntry(this, world, region, "expiredate", new Date(newRentTime));
+				Utils.setEntry(this, world, region, "expiredate", newRentTime);
 				tokenManager.updateSigns(this, world, region);
 				langHandler.playerNormalOut(owner, "PLAYER.REGION.ADDED_RENTTIME", null);
 			}

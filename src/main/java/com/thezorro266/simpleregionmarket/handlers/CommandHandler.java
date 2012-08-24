@@ -34,6 +34,7 @@ public class CommandHandler implements CommandExecutor {
 		this.langHandler = langHandler;
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = null;
 		Boolean isConsole = true;
@@ -178,7 +179,7 @@ public class CommandHandler implements CommandExecutor {
 				}
 			} else {
 				final Player givenPlayer = Bukkit.getPlayer(args[1]);
-				if(givenPlayer == null) {
+				if (givenPlayer == null) {
 					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_PLAYER", Level.INFO, null);
 					} else {
@@ -198,35 +199,37 @@ public class CommandHandler implements CommandExecutor {
 						world = player.getWorld().getName();
 					}
 				}
-				World worldWorld = Bukkit.getWorld(world);
-				if(worldWorld == null) {
-					if(isConsole) {
+				final World worldWorld = Bukkit.getWorld(world);
+				if (worldWorld == null) {
+					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_WORLD", Level.SEVERE, null);
 					} else {
 						langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
 					}
 					return true;
 				}
-				ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(worldWorld, region);
-				if(protectedRegion == null) {
+				final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(worldWorld, region);
+				if (protectedRegion == null) {
 					final ArrayList<String> list = new ArrayList<String>();
 					list.add(region);
 					list.add(world);
-					if(isConsole) {
+					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_REGION", Level.SEVERE, list);
 					} else {
 						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
 					}
 					return true;
 				}
-				
+
 				Boolean found = false;
 				for (final TemplateMain token : TokenManager.tokenList) {
 					if (Utils.getEntry(token, world, region, "taken") != null) {
 						if (Utils.getEntryBoolean(token, world, region, "taken")) {
-							if(token.canAddMember()) {
-								if(isConsole || SimpleRegionMarket.permManager.canPlayerAddMember(player, token) || SimpleRegionMarket.permManager.isAdmin(player)) {
-									if(isConsole || Utils.getEntryString(token, world, region, "owner").equalsIgnoreCase(player.getName()) || SimpleRegionMarket.permManager.isAdmin(player)) {
+							if (token.canAddMember()) {
+								if (isConsole || SimpleRegionMarket.permManager.canPlayerAddMember(player, token)
+										|| SimpleRegionMarket.permManager.isAdmin(player)) {
+									if (isConsole || Utils.getEntryString(token, world, region, "owner").equalsIgnoreCase(player.getName())
+											|| SimpleRegionMarket.permManager.isAdmin(player)) {
 										SimpleRegionMarket.wgManager.addMember(protectedRegion, givenPlayer);
 										found = true;
 										break;
@@ -237,7 +240,7 @@ public class CommandHandler implements CommandExecutor {
 									langHandler.playerErrorOut(player, "PLAYER.NO_PERMISSIONS.ADDMEMBER", null);
 								}
 							} else {
-								if(isConsole) {
+								if (isConsole) {
 									langHandler.consoleOut("CMD.ADDMEMBER.NO_ADDMEMBER", Level.SEVERE, null);
 								} else {
 									langHandler.playerErrorOut(player, "CMD.ADDMEMEBR.NO_ADDMEMBER", null);
@@ -246,7 +249,7 @@ public class CommandHandler implements CommandExecutor {
 						}
 					}
 				}
-				
+
 				final ArrayList<String> list = new ArrayList<String>();
 				if (found) {
 					list.add(givenPlayer.getName());
@@ -276,7 +279,7 @@ public class CommandHandler implements CommandExecutor {
 				}
 			} else {
 				final Player givenPlayer = Bukkit.getPlayer(args[1]);
-				if(givenPlayer == null) {
+				if (givenPlayer == null) {
 					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_PLAYER", Level.INFO, null);
 					} else {
@@ -296,35 +299,37 @@ public class CommandHandler implements CommandExecutor {
 						world = player.getWorld().getName();
 					}
 				}
-				World worldWorld = Bukkit.getWorld(world);
-				if(worldWorld == null) {
-					if(isConsole) {
+				final World worldWorld = Bukkit.getWorld(world);
+				if (worldWorld == null) {
+					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_WORLD", Level.SEVERE, null);
 					} else {
 						langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
 					}
 					return true;
 				}
-				ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(worldWorld, region);
-				if(protectedRegion == null) {
+				final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(worldWorld, region);
+				if (protectedRegion == null) {
 					final ArrayList<String> list = new ArrayList<String>();
 					list.add(region);
 					list.add(world);
-					if(isConsole) {
+					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_REGION", Level.SEVERE, list);
 					} else {
 						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
 					}
 					return true;
 				}
-				
+
 				Boolean found = false;
 				for (final TemplateMain token : TokenManager.tokenList) {
 					if (Utils.getEntry(token, world, region, "taken") != null) {
 						if (Utils.getEntryBoolean(token, world, region, "taken")) {
-							if(token.canAddMember()) {
-								if(isConsole || SimpleRegionMarket.permManager.canPlayerAddMember(player, token) || SimpleRegionMarket.permManager.isAdmin(player)) {
-									if(isConsole || Utils.getEntryString(token, world, region, "owner").equalsIgnoreCase(player.getName()) || SimpleRegionMarket.permManager.isAdmin(player)) {
+							if (token.canAddMember()) {
+								if (isConsole || SimpleRegionMarket.permManager.canPlayerAddMember(player, token)
+										|| SimpleRegionMarket.permManager.isAdmin(player)) {
+									if (isConsole || Utils.getEntryString(token, world, region, "owner").equalsIgnoreCase(player.getName())
+											|| SimpleRegionMarket.permManager.isAdmin(player)) {
 										SimpleRegionMarket.wgManager.removeMember(protectedRegion, givenPlayer);
 										found = true;
 										break;
@@ -335,7 +340,7 @@ public class CommandHandler implements CommandExecutor {
 									langHandler.playerErrorOut(player, "PLAYER.NO_PERMISSIONS.ADDMEMBER", null);
 								}
 							} else {
-								if(isConsole) {
+								if (isConsole) {
 									langHandler.consoleOut("CMD.ADDMEMBER.NO_ADDMEMBER", Level.SEVERE, null);
 								} else {
 									langHandler.playerErrorOut(player, "CMD.ADDMEMEBR.NO_ADDMEMBER", null);
@@ -344,7 +349,7 @@ public class CommandHandler implements CommandExecutor {
 						}
 					}
 				}
-				
+
 				final ArrayList<String> list = new ArrayList<String>();
 				if (found) {
 					list.add(givenPlayer.getName());
@@ -374,7 +379,7 @@ public class CommandHandler implements CommandExecutor {
 				}
 			} else {
 				final Player givenPlayer = Bukkit.getPlayer(args[1]);
-				if(givenPlayer == null) {
+				if (givenPlayer == null) {
 					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_PLAYER", Level.INFO, null);
 					} else {
@@ -394,35 +399,37 @@ public class CommandHandler implements CommandExecutor {
 						world = player.getWorld().getName();
 					}
 				}
-				World worldWorld = Bukkit.getWorld(world);
-				if(worldWorld == null) {
-					if(isConsole) {
+				final World worldWorld = Bukkit.getWorld(world);
+				if (worldWorld == null) {
+					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_WORLD", Level.SEVERE, null);
 					} else {
 						langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
 					}
 					return true;
 				}
-				ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(worldWorld, region);
-				if(protectedRegion == null) {
+				final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(worldWorld, region);
+				if (protectedRegion == null) {
 					final ArrayList<String> list = new ArrayList<String>();
 					list.add(region);
 					list.add(world);
-					if(isConsole) {
+					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_REGION", Level.SEVERE, list);
 					} else {
 						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
 					}
 					return true;
 				}
-				
+
 				Boolean found = false;
 				for (final TemplateMain token : TokenManager.tokenList) {
 					if (Utils.getEntry(token, world, region, "taken") != null) {
 						if (Utils.getEntryBoolean(token, world, region, "taken")) {
-							if(token.canAddOwner()) {
-								if(isConsole || SimpleRegionMarket.permManager.canPlayerAddOwner(player, token) || SimpleRegionMarket.permManager.isAdmin(player)) {
-									if(isConsole || Utils.getEntryString(token, world, region, "owner").equalsIgnoreCase(player.getName()) || SimpleRegionMarket.permManager.isAdmin(player)) {
+							if (token.canAddOwner()) {
+								if (isConsole || SimpleRegionMarket.permManager.canPlayerAddOwner(player, token)
+										|| SimpleRegionMarket.permManager.isAdmin(player)) {
+									if (isConsole || Utils.getEntryString(token, world, region, "owner").equalsIgnoreCase(player.getName())
+											|| SimpleRegionMarket.permManager.isAdmin(player)) {
 										SimpleRegionMarket.wgManager.addOwner(protectedRegion, givenPlayer);
 										found = true;
 										break;
@@ -433,7 +440,7 @@ public class CommandHandler implements CommandExecutor {
 									langHandler.playerErrorOut(player, "PLAYER.NO_PERMISSIONS.ADDOWNER", null);
 								}
 							} else {
-								if(isConsole) {
+								if (isConsole) {
 									langHandler.consoleOut("CMD.ADDOWNER.NO_ADDOWNER", Level.SEVERE, null);
 								} else {
 									langHandler.playerErrorOut(player, "CMD.ADDOWNER.NO_ADDOWNER", null);
@@ -442,7 +449,7 @@ public class CommandHandler implements CommandExecutor {
 						}
 					}
 				}
-				
+
 				final ArrayList<String> list = new ArrayList<String>();
 				if (found) {
 					list.add(givenPlayer.getName());
@@ -472,7 +479,7 @@ public class CommandHandler implements CommandExecutor {
 				}
 			} else {
 				final Player givenPlayer = Bukkit.getPlayer(args[1]);
-				if(givenPlayer == null) {
+				if (givenPlayer == null) {
 					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_PLAYER", Level.INFO, null);
 					} else {
@@ -492,35 +499,37 @@ public class CommandHandler implements CommandExecutor {
 						world = player.getWorld().getName();
 					}
 				}
-				World worldWorld = Bukkit.getWorld(world);
-				if(worldWorld == null) {
-					if(isConsole) {
+				final World worldWorld = Bukkit.getWorld(world);
+				if (worldWorld == null) {
+					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_WORLD", Level.SEVERE, null);
 					} else {
 						langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
 					}
 					return true;
 				}
-				ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(worldWorld, region);
-				if(protectedRegion == null) {
+				final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(worldWorld, region);
+				if (protectedRegion == null) {
 					final ArrayList<String> list = new ArrayList<String>();
 					list.add(region);
 					list.add(world);
-					if(isConsole) {
+					if (isConsole) {
 						langHandler.consoleOut("COMMON.NO_REGION", Level.SEVERE, list);
 					} else {
 						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
 					}
 					return true;
 				}
-				
+
 				Boolean found = false;
 				for (final TemplateMain token : TokenManager.tokenList) {
 					if (Utils.getEntry(token, world, region, "taken") != null) {
 						if (Utils.getEntryBoolean(token, world, region, "taken")) {
-							if(token.canAddOwner()) {
-								if(isConsole || SimpleRegionMarket.permManager.canPlayerAddOwner(player, token) || SimpleRegionMarket.permManager.isAdmin(player)) {
-									if(isConsole || Utils.getEntryString(token, world, region, "owner").equalsIgnoreCase(player.getName()) || SimpleRegionMarket.permManager.isAdmin(player)) {
+							if (token.canAddOwner()) {
+								if (isConsole || SimpleRegionMarket.permManager.canPlayerAddOwner(player, token)
+										|| SimpleRegionMarket.permManager.isAdmin(player)) {
+									if (isConsole || Utils.getEntryString(token, world, region, "owner").equalsIgnoreCase(player.getName())
+											|| SimpleRegionMarket.permManager.isAdmin(player)) {
 										SimpleRegionMarket.wgManager.removeOwner(protectedRegion, givenPlayer);
 										found = true;
 										break;
@@ -531,7 +540,7 @@ public class CommandHandler implements CommandExecutor {
 									langHandler.playerErrorOut(player, "PLAYER.NO_PERMISSIONS.ADDOWNER", null);
 								}
 							} else {
-								if(isConsole) {
+								if (isConsole) {
 									langHandler.consoleOut("CMD.ADDOWNER.NO_ADDOWNER", Level.SEVERE, null);
 								} else {
 									langHandler.playerErrorOut(player, "CMD.ADDOWNER.NO_ADDOWNER", null);
@@ -540,7 +549,7 @@ public class CommandHandler implements CommandExecutor {
 						}
 					}
 				}
-				
+
 				final ArrayList<String> list = new ArrayList<String>();
 				if (found) {
 					list.add(givenPlayer.getName());

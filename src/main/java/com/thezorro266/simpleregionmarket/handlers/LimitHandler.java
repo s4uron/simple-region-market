@@ -146,7 +146,7 @@ public class LimitHandler {
 		}
 		return count;
 	}
-	
+
 	/**
 	 * Returns a global count for regions in world, where player is owner
 	 * 
@@ -161,7 +161,7 @@ public class LimitHandler {
 		}
 		return count;
 	}
-	
+
 	/**
 	 * Returns a global count for regions in world, where player is owner
 	 * 

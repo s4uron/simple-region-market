@@ -157,7 +157,7 @@ public class TemplateLet extends TemplateMain {
 		}
 		return replacementMap;
 	}
-	
+
 	@Override
 	public boolean canAddOwner() {
 		return false;

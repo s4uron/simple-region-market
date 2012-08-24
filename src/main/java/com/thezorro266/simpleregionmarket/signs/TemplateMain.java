@@ -320,11 +320,11 @@ public abstract class TemplateMain {
 		tokenManager.updateSigns(this, world, region);
 		return true;
 	}
-	
+
 	public boolean canAddMember() {
 		return Utils.getOptionBoolean(this, "addmember");
 	}
-	
+
 	public boolean canAddOwner() {
 		return Utils.getOptionBoolean(this, "addowner");
 	}

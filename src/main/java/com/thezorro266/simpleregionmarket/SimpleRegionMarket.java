@@ -92,6 +92,7 @@ public class SimpleRegionMarket extends JavaPlugin {
 		langHandler.consoleDirectOut(Level.INFO, "The check took " + ms + "ms");
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			@Override
 			public void run() {
 				tokenManager.checkRegions();
 			}
