@@ -1,24 +1,42 @@
 package com.thezorro266.simpleregionmarket.handlers;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.thezorro266.simpleregionmarket.SimpleRegionMarket;
 import com.thezorro266.simpleregionmarket.TokenManager;
+import com.thezorro266.simpleregionmarket.limits.GlobalLimit;
+import com.thezorro266.simpleregionmarket.limits.Limit;
+import com.thezorro266.simpleregionmarket.limits.ParentregionLimit;
+import com.thezorro266.simpleregionmarket.limits.ParentregionTokenLimit;
+import com.thezorro266.simpleregionmarket.limits.PlayerLimit;
+import com.thezorro266.simpleregionmarket.limits.PlayerTokenLimit;
+import com.thezorro266.simpleregionmarket.limits.TokenLimit;
+import com.thezorro266.simpleregionmarket.limits.WorldLimit;
+import com.thezorro266.simpleregionmarket.limits.WorldTokenLimit;
 import com.thezorro266.simpleregionmarket.signs.TemplateMain;
 
 public class LimitHandler {
-	private final static String LIMITS_NAME = "limits.yml";
-	private final static File LIMITS_FILE = new File(SimpleRegionMarket.getPluginDir() + LIMITS_NAME);
+	private static final String LIMITS_NAME = "limits.yml";
+	private static final File LIMITS_FILE = new File(SimpleRegionMarket.getPluginDir() + LIMITS_NAME);
 
-	private final HashMap<String, Object> limitEntries = new HashMap<String, Object>();
+	private final ArrayList<Limit> limitList = new ArrayList<Limit>();
 
-	public LimitHandler(SimpleRegionMarket plugin, TokenManager tokenManager) {
+	public final HashMap<String, Integer> limitEntries = new HashMap<String, Integer>();
+
+	private final LanguageHandler langHandler;
+
+	public LimitHandler(SimpleRegionMarket plugin, TokenManager tokenManager, LanguageHandler langHandler) {
+		this.langHandler = langHandler;
+
+		registerLimits();
 		load();
 	}
 
@@ -26,223 +44,167 @@ public class LimitHandler {
 		final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(LIMITS_FILE);
 
 		for (final String key : configHandle.getKeys(true)) {
-			limitEntries.put(key, configHandle.get(key));
+			int value;
+			final String tempVal = configHandle.getString(key);
+			if (tempVal.equalsIgnoreCase("INFINITE")) {
+				value = Limit.INFINITE;
+			} else if (tempVal.equalsIgnoreCase("DISABLED")) {
+				value = Limit.DISABLED;
+			} else {
+				value = Integer.parseInt(tempVal);
+			}
+
+			if (value < -2) {
+				value = -2;
+			}
+
+			limitEntries.put(key, value);
 		}
 	}
 
-	public boolean checkPlayerGlobal(Player player) {
-		if (getLimitEntry("global.global") != -1) {
-			return (countPlayerGlobalRegions(player) < getLimitEntry("global.global"));
+	public void save() throws IOException {
+		final YamlConfiguration configHandle = new YamlConfiguration();
+
+		for (final String key : limitEntries.keySet()) {
+			String value;
+			final int tempVal = limitEntries.get(key);
+			if (tempVal == Limit.DISABLED) {
+				value = "DISABLED";
+			} else if (tempVal == Limit.INFINITE) {
+				value = "INFINITE";
+			} else {
+				value = Integer.toString(tempVal);
+			}
+
+			configHandle.set(key, value);
 		}
-		return true;
+
+		configHandle.save(LIMITS_FILE);
 	}
 
-	public boolean checkPlayerToken(Player player, TemplateMain token) {
-		if (getLimitEntry(token.id + ".global") != -1) {
-			return (countPlayerTokenRegions(player, token) < getLimitEntry(token.id + ".global"));
-		}
-		return true;
+	private void registerLimits() {
+		limitList.add(new GlobalLimit("global", "g"));
+		limitList.add(new TokenLimit("token", "t"));
+		limitList.add(new WorldLimit("world", "w"));
+		limitList.add(new WorldTokenLimit("worldtoken", "wt"));
+		limitList.add(new ParentregionLimit("parentregion", "pr"));
+		limitList.add(new ParentregionTokenLimit("parentregiontoken", "prt"));
+		// limitList.add(new PermissionLimit("permission", "perm"));
+		limitList.add(new PlayerLimit("player", "p"));
+		limitList.add(new PlayerTokenLimit("playertoken", "pt"));
 	}
 
-	public boolean checkPlayerGlobalPlayer(Player player) {
-		if (getLimitEntry("global.player." + player.getName()) != -1) {
-			return (countPlayerGlobalPlayerRegions(player) < getLimitEntry("global.player." + player.getName()));
+	public Limit getLimitClassByName(String name) {
+		final Iterator<Limit> i = limitList.iterator();
+		while (i.hasNext()) {
+			final Limit limit = i.next();
+			if (limit.getName().equals(name)) {
+				return limit;
+			}
 		}
-		return true;
+		return null;
 	}
 
-	public boolean checkPlayerTokenPlayer(Player player, TemplateMain token) {
-		if (getLimitEntry(token.id + ".player." + player.getName()) != -1) {
-			return (countPlayerPlayerRegions(player, token) < getLimitEntry(token.id + ".player." + player.getName()));
-		}
-		return true;
-	}
+	public boolean checkLimits(Player player, String world, TemplateMain token, ProtectedRegion protectedRegion) {
+		if (player != null) {
+			Limit curLimit = null;
 
-	public boolean checkPlayerGlobalWorld(Player player, String world) {
-		if (getLimitEntry("global.world." + world) != -1) {
-			return (countPlayerGlobalWorldRegions(player, world) < getLimitEntry("global.world." + world));
-		}
-		return true;
-	}
-
-	public boolean checkPlayerTokenWorld(Player player, TemplateMain token, String world) {
-		if (getLimitEntry(token.id + ".world." + world) != -1) {
-			return (countPlayerWorldRegions(player, token, world) < getLimitEntry(token.id + ".world." + world));
-		}
-		return true;
-	}
-
-	public boolean checkPlayerGlobalRegion(Player player, ProtectedRegion parentRegion) {
-		if (getLimitEntry("global.parentregion." + parentRegion.getId()) != -1) {
-			return (countPlayerGlobalChildRegions(player, parentRegion) < getLimitEntry("global.parentregion." + parentRegion.getId()));
-		}
-		return true;
-	}
-
-	public boolean checkPlayerTokenRegion(Player player, TemplateMain token, ProtectedRegion parentRegion) {
-		if (getLimitEntry(token.id + ".parentregion." + parentRegion.getId()) != -1) {
-			return (countPlayerChildRegions(player, token, parentRegion) < getLimitEntry(token.id + ".parentregion." + parentRegion.getId()));
-		}
-		return true;
-	}
-
-	/**
-	 * Returns a count from template, parentRegion for regions, where player is owner
-	 * 
-	 * @param player
-	 * @param token
-	 *            template, where to count regions from
-	 * @param parentRegion
-	 * @return the count of all regions from the template in the parent region owned by the player
-	 */
-	public int countPlayerChildRegions(Player player, TemplateMain token, ProtectedRegion parentRegion) {
-		int count = 0;
-		for (final String world : token.entries.keySet()) {
-			for (final String region : token.entries.get(world).keySet()) {
-				final ProtectedRegion childRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
-				if (childRegion != null && childRegion.getParent().equals(parentRegion)) {
-					if (token.isRegionOwner(player, world, region)) {
-						count++;
+			// Player limits
+			if (token != null) {
+				curLimit = getLimitClassByName("playertoken");
+				if (((PlayerTokenLimit) curLimit).getLimit(player, token) != Limit.DISABLED) {
+					if (((PlayerTokenLimit) curLimit).checkLimit(player, token)) {
+						return true;
+					} else {
+						langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_PLAYER", null);
+						return false;
 					}
 				}
 			}
-		}
-		return count;
-	}
+			curLimit = getLimitClassByName("player");
+			if (((PlayerLimit) curLimit).getLimit(player) != Limit.DISABLED) {
+				if (((PlayerLimit) curLimit).checkLimit(player)) {
+					return true;
+				} else {
+					langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_PLAYER", null);
+					return false;
+				}
+			}
 
-	/**
-	 * Returns a global count for regions with the parent region parentRegion, where player is owner
-	 * 
-	 * @param player
-	 * @param parentRegion
-	 * @return the count of all regions with the parent region owned by the player
-	 */
-	public int countPlayerGlobalChildRegions(Player player, ProtectedRegion parentRegion) {
-		int count = 0;
-		for (final TemplateMain token : TokenManager.tokenList) {
-			count += countPlayerChildRegions(player, token, parentRegion);
-		}
-		return count;
-	}
+			// TODO: Permission limits (highest counts)
 
-	/**
-	 * Returns a count from template, world for regions, where player is owner
-	 * 
-	 * @param player
-	 * @param token
-	 *            template, where to count regions from
-	 * @param world
-	 * @return the count of all regions from the template in the world owned by the player
-	 */
-	public int countPlayerWorldRegions(Player player, TemplateMain token, String world) {
-		int count = 0;
-		for (final String region : token.entries.get(world).keySet()) {
-			final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
+			// Parentregion limits
 			if (protectedRegion != null) {
-				if (token.isRegionOwner(player, world, region)) {
-					count++;
+				if (token != null) {
+					curLimit = getLimitClassByName("parentregiontoken");
+					if (((ParentregionTokenLimit) curLimit).getLimit(protectedRegion, token) != Limit.DISABLED) {
+						if (((ParentregionTokenLimit) curLimit).checkLimit(player, protectedRegion, token)) {
+							return true;
+						} else {
+							langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_PARENTREGION", null);
+							return false;
+						}
+					}
 				}
-			}
-		}
-		return count;
-	}
-
-	/**
-	 * Returns a global count for regions in world, where player is owner
-	 * 
-	 * @param player
-	 * @param world
-	 * @return the count of all regions in the world owned by the player
-	 */
-	public int countPlayerGlobalPlayerRegions(Player player) {
-		int count = 0;
-		for (final TemplateMain token : TokenManager.tokenList) {
-			count += countPlayerPlayerRegions(player, token);
-		}
-		return count;
-	}
-
-	/**
-	 * Returns a global count for regions in world, where player is owner
-	 * 
-	 * @param player
-	 * @param world
-	 * @return the count of all regions in the world owned by the player
-	 */
-	public int countPlayerPlayerRegions(Player player, TemplateMain token) {
-		int count = 0;
-		for (final String world : token.entries.keySet()) {
-			for (final String region : token.entries.get(world).keySet()) {
-				final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
-				if (protectedRegion != null) {
-					if (token.isRegionOwner(player, world, region)) {
-						count++;
+				curLimit = getLimitClassByName("parentregion");
+				if (((ParentregionLimit) curLimit).getLimit(protectedRegion) != Limit.DISABLED) {
+					if (((ParentregionLimit) curLimit).checkLimit(player, protectedRegion)) {
+						return true;
+					} else {
+						langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_PARENTREGION", null);
+						return false;
 					}
 				}
 			}
-		}
-		return count;
-	}
 
-	/**
-	 * Returns a global count for regions in world, where player is owner
-	 * 
-	 * @param player
-	 * @param world
-	 * @return the count of all regions in the world owned by the player
-	 */
-	public int countPlayerGlobalWorldRegions(Player player, String world) {
-		int count = 0;
-		for (final TemplateMain token : TokenManager.tokenList) {
-			count += countPlayerWorldRegions(player, token, world);
-		}
-		return count;
-	}
-
-	/**
-	 * Returns a count per template for regions, where player is owner
-	 * 
-	 * @param player
-	 * @param token
-	 *            template, where to count regions from
-	 * @return the count of all regions from the template owned by the player
-	 */
-	public int countPlayerTokenRegions(Player player, TemplateMain token) {
-		int count = 0;
-		for (final String world : token.entries.keySet()) {
-			for (final String region : token.entries.get(world).keySet()) {
-				final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
-				if (protectedRegion != null) {
-					if (token.isRegionOwner(player, world, region)) {
-						count++;
+			// World limits
+			if (world != null) {
+				if (token != null) {
+					curLimit = getLimitClassByName("worldtoken");
+					if (((WorldTokenLimit) curLimit).getLimit(world, token) != Limit.DISABLED) {
+						if (((WorldTokenLimit) curLimit).checkLimit(player, world, token)) {
+							return true;
+						} else {
+							langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_WORLD", null);
+							return false;
+						}
+					}
+				}
+				curLimit = getLimitClassByName("world");
+				if (((WorldLimit) curLimit).getLimit(world) != Limit.DISABLED) {
+					if (((WorldLimit) curLimit).checkLimit(player, world)) {
+						return true;
+					} else {
+						langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_WORLD", null);
+						return false;
 					}
 				}
 			}
-		}
-		return count;
-	}
 
-	/**
-	 * Returns a global count for regions, where player is owner
-	 * 
-	 * @param player
-	 * @return the count of all regions owned by the player
-	 */
-	public int countPlayerGlobalRegions(Player player) {
-		int count = 0;
-		for (final TemplateMain token : TokenManager.tokenList) {
-			count += countPlayerTokenRegions(player, token);
-		}
-		return count;
-	}
+			// Token limit
+			if (token != null) {
+				curLimit = getLimitClassByName("token");
+				if (((TokenLimit) curLimit).getLimit(token) != Limit.DISABLED) {
+					if (((TokenLimit) curLimit).checkLimit(player, token)) {
+						return true;
+					} else {
+						langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN", null);
+						return false;
+					}
+				}
+			}
 
-	private int getLimitEntry(String key) {
-		if (limitEntries.containsKey(key)) {
-			try {
-				return Integer.parseInt(limitEntries.get(key).toString());
-			} catch (final Exception e) {
+			// Global limit
+			curLimit = getLimitClassByName("global");
+			if (((GlobalLimit) curLimit).getLimit() != Limit.DISABLED) {
+				if (((GlobalLimit) curLimit).checkLimit(player)) {
+					return true;
+				} else {
+					langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL", null);
+					return false;
+				}
 			}
 		}
-		return -1;
+		return true; // If none of the limits is set
 	}
 }

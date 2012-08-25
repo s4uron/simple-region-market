@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class MorePageDisplay {
 	static final int ROWS = 10;
-	static final int CHARS = 50;
+	static final int CHARS = 54;
 
 	private ArrayList<String> header = new ArrayList<String>();
 	private final ArrayList<StringConnected> content = new ArrayList<StringConnected>();

@@ -66,10 +66,10 @@ public class SimpleRegionMarket extends JavaPlugin {
 		tokenManager = new TokenManager(this, langHandler);
 		tokenManager.initTemplates();
 
-		limitHandler = new LimitHandler(this, tokenManager);
+		limitHandler = new LimitHandler(this, tokenManager, langHandler);
 
 		new ListenerHandler(this, langHandler, tokenManager);
-		
+
 		new ConfirmListener(this);
 
 		commandHandler = new CommandHandler(this, langHandler);

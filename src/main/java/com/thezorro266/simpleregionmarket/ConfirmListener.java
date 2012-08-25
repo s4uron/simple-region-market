@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class ConfirmListener implements Listener {
 	private static HashMap<String, MorePageDisplay> displays = new HashMap<String, MorePageDisplay>();
-	
+
 	public ConfirmListener(SimpleRegionMarket plugin) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}

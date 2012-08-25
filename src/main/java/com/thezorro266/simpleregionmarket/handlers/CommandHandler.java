@@ -166,7 +166,9 @@ public class CommandHandler implements CommandExecutor {
 				langHandler.playerDirectOut(player, ChatColor.BLUE, "Not yet implemented");
 			}
 		} else if (args[0].equalsIgnoreCase("limits") || args[0].equalsIgnoreCase("limit")) { // TODO set/get limits command
-			MorePageDisplay chatDisplay = new MorePageDisplay(new String[]{"<Limits>"}, "Limits for all kind of stuff");
+			final MorePageDisplay chatDisplay = new MorePageDisplay(new String[] {
+				"<Limits>"
+			}, "Limits for all kind of stuff");
 			chatDisplay.display(sender);
 		} else if (args[0].equalsIgnoreCase("addmember")) {
 			if (args.length < 3) {
