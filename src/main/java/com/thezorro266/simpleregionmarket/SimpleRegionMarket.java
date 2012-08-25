@@ -22,14 +22,14 @@ public class SimpleRegionMarket extends JavaPlugin {
 	private static String pluginDir = null;
 	private boolean unloading = false;
 
-	// Public classes:
+	// Public classes
 	public static ConfigHandler configurationHandler = null;
 	public static WorldGuardManager wgManager = null;
 	public static PermissionsManager permManager = null;
 	public static EconomyManager econManager = null;
 	public static LimitHandler limitHandler = null;
 
-	// Private classes:
+	// Private classes
 	private CommandHandler commandHandler;
 	private LanguageHandler langHandler;
 	private TokenManager tokenManager;
@@ -69,6 +69,8 @@ public class SimpleRegionMarket extends JavaPlugin {
 		limitHandler = new LimitHandler(this, tokenManager);
 
 		new ListenerHandler(this, langHandler, tokenManager);
+		
+		new ConfirmListener(this);
 
 		commandHandler = new CommandHandler(this, langHandler);
 		getCommand("regionmarket").setExecutor(commandHandler);

@@ -366,6 +366,6 @@ public class Utils {
 	 * @return the copyright
 	 */
 	public static String getCopyright() {
-		return "Copyright (C) 2011-2012  theZorro266  -  GPLv3";
+		return "Copyright (C) 2011-2012  theZorro266  -  WTFPL";
 	}
 }

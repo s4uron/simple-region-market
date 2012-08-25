@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.thezorro266.simpleregionmarket.MorePageDisplay;
 import com.thezorro266.simpleregionmarket.SimpleRegionMarket;
 import com.thezorro266.simpleregionmarket.TokenManager;
 import com.thezorro266.simpleregionmarket.Utils;
@@ -165,11 +166,8 @@ public class CommandHandler implements CommandExecutor {
 				langHandler.playerDirectOut(player, ChatColor.BLUE, "Not yet implemented");
 			}
 		} else if (args[0].equalsIgnoreCase("limits") || args[0].equalsIgnoreCase("limit")) { // TODO set/get limits command
-			if (player == null) {
-				langHandler.consoleDirectOut(Level.INFO, "Not yet implemented");
-			} else {
-				langHandler.playerDirectOut(player, ChatColor.BLUE, "Not yet implemented");
-			}
+			MorePageDisplay chatDisplay = new MorePageDisplay(new String[]{"<Limits>"}, "Limits for all kind of stuff");
+			chatDisplay.display(sender);
 		} else if (args[0].equalsIgnoreCase("addmember")) {
 			if (args.length < 3) {
 				if (isConsole) {
