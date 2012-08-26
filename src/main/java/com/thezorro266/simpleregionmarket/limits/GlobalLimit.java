@@ -1,7 +1,5 @@
 package com.thezorro266.simpleregionmarket.limits;
 
-import org.bukkit.entity.Player;
-
 import com.thezorro266.simpleregionmarket.SimpleRegionMarket;
 import com.thezorro266.simpleregionmarket.TokenManager;
 import com.thezorro266.simpleregionmarket.signs.TemplateMain;
@@ -13,10 +11,19 @@ public class GlobalLimit extends Limit {
 	}
 
 	public int getLimit() {
-		return getLimitEntry("global.global");
+		return getLimitEntry("template.all");
 	}
 
-	public boolean checkLimit(Player player) {
+	public void setLimit(int newLimit) {
+		final String key = "template.all";
+		if (newLimit == DISABLED) {
+			SimpleRegionMarket.limitHandler.limitEntries.remove(key);
+		} else {
+			SimpleRegionMarket.limitHandler.limitEntries.put(key, newLimit);
+		}
+	}
+
+	public boolean checkLimit(String player) {
 		final int limitEntry = getLimit();
 		if (limitEntry != INFINITE && limitEntry != DISABLED) {
 			return countPlayerRegions(player) < limitEntry;
@@ -24,7 +31,7 @@ public class GlobalLimit extends Limit {
 		return true;
 	}
 
-	public int countPlayerRegions(Player player) {
+	public int countPlayerRegions(String player) {
 		int count = 0;
 		for (final TemplateMain token : TokenManager.tokenList) {
 			count += ((TokenLimit) SimpleRegionMarket.limitHandler.getLimitClassByName("token")).countPlayerRegions(player, token);

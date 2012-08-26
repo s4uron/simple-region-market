@@ -1,7 +1,5 @@
 package com.thezorro266.simpleregionmarket.limits;
 
-import org.bukkit.entity.Player;
-
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.thezorro266.simpleregionmarket.SimpleRegionMarket;
 import com.thezorro266.simpleregionmarket.TokenManager;
@@ -14,10 +12,19 @@ public class ParentregionLimit extends Limit {
 	}
 
 	public int getLimit(ProtectedRegion parentRegion) {
-		return getLimitEntry("global.parentregion." + parentRegion.getId());
+		return getLimitEntry("parentregion.all." + parentRegion.getId());
 	}
 
-	public boolean checkLimit(Player player, ProtectedRegion parentRegion) {
+	public void setLimit(int newLimit, ProtectedRegion parentRegion) {
+		final String key = "parentregion.all." + parentRegion.getId();
+		if (newLimit == DISABLED) {
+			SimpleRegionMarket.limitHandler.limitEntries.remove(key);
+		} else {
+			SimpleRegionMarket.limitHandler.limitEntries.put(key, newLimit);
+		}
+	}
+
+	public boolean checkLimit(String player, ProtectedRegion parentRegion) {
 		final int limitEntry = getLimit(parentRegion);
 		if (limitEntry != INFINITE && limitEntry != DISABLED) {
 			return countPlayerRegions(player, parentRegion) < limitEntry;
@@ -25,7 +32,7 @@ public class ParentregionLimit extends Limit {
 		return true;
 	}
 
-	public int countPlayerRegions(Player player, ProtectedRegion parentRegion) {
+	public int countPlayerRegions(String player, ProtectedRegion parentRegion) {
 		int count = 0;
 		for (final TemplateMain token : TokenManager.tokenList) {
 			count += ((ParentregionTokenLimit) SimpleRegionMarket.limitHandler.getLimitClassByName("parentregiontoken")).countPlayerRegions(player,

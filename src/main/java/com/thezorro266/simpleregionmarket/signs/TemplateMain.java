@@ -168,10 +168,10 @@ public abstract class TemplateMain {
 		return null;
 	}
 
-	public boolean isRegionOwner(Player player, String world, String region) {
+	public boolean isRegionOwner(String player, String world, String region) {
 		if (Utils.getEntry(this, world, region, "taken") != null && Utils.getEntryBoolean(this, world, region, "taken")
 				&& Utils.getEntry(this, world, region, "owner") != null) {
-			if (Utils.getEntryString(this, world, region, "owner").equalsIgnoreCase(player.getName())) {
+			if (Utils.getEntryString(this, world, region, "owner").equalsIgnoreCase(player)) {
 				return true;
 			}
 		}

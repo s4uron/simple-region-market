@@ -31,4 +31,33 @@ public abstract class Limit {
 		}
 		return Limit.DISABLED;
 	}
+
+	public static String limit2String(int limit) {
+		String limitVal;
+		if (limit == DISABLED) {
+			limitVal = "DISABLED";
+		} else if (limit == INFINITE) {
+			limitVal = "INFINITE";
+		} else {
+			limitVal = Integer.toString(limit);
+		}
+		return limitVal;
+	}
+
+	public static int string2Limit(String limit) {
+		int limitVal;
+		if (limit.equalsIgnoreCase("DISABLED")) {
+			limitVal = DISABLED;
+		} else if (limit.equalsIgnoreCase("INFINITE")) {
+			limitVal = INFINITE;
+		} else {
+			limitVal = Integer.parseInt(limit);
+		}
+
+		if (limitVal < -2) {
+			limitVal = -2;
+		}
+
+		return limitVal;
+	}
 }

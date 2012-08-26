@@ -27,9 +27,9 @@ public class LimitHandler {
 	private static final String LIMITS_NAME = "limits.yml";
 	private static final File LIMITS_FILE = new File(SimpleRegionMarket.getPluginDir() + LIMITS_NAME);
 
-	private final ArrayList<Limit> limitList = new ArrayList<Limit>();
+	public ArrayList<Limit> limitList = new ArrayList<Limit>();
 
-	public final HashMap<String, Integer> limitEntries = new HashMap<String, Integer>();
+	public HashMap<String, Integer> limitEntries = new HashMap<String, Integer>();
 
 	private final LanguageHandler langHandler;
 
@@ -41,24 +41,24 @@ public class LimitHandler {
 	}
 
 	public void load() {
-		final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(LIMITS_FILE);
+		if (LIMITS_FILE.exists()) {
+			final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(LIMITS_FILE);
 
-		for (final String key : configHandle.getKeys(true)) {
-			int value;
-			final String tempVal = configHandle.getString(key);
-			if (tempVal.equalsIgnoreCase("INFINITE")) {
-				value = Limit.INFINITE;
-			} else if (tempVal.equalsIgnoreCase("DISABLED")) {
-				value = Limit.DISABLED;
-			} else {
-				value = Integer.parseInt(tempVal);
+			for (String key : configHandle.getKeys(true)) {
+				if (!configHandle.isConfigurationSection(key)) {
+					final String oldKey = key;
+					if (key.startsWith("player.")) {
+						key = key.toLowerCase();
+					}
+					limitEntries.put(key, Limit.string2Limit(configHandle.getString(oldKey)));
+				}
 			}
-
-			if (value < -2) {
-				value = -2;
+		} else {
+			try {
+				LIMITS_FILE.createNewFile();
+			} catch (final IOException e) {
+				langHandler.consoleOut("LIMITS.ERROR.CREATE_LIMITSFILE");
 			}
-
-			limitEntries.put(key, value);
 		}
 	}
 
@@ -66,17 +66,7 @@ public class LimitHandler {
 		final YamlConfiguration configHandle = new YamlConfiguration();
 
 		for (final String key : limitEntries.keySet()) {
-			String value;
-			final int tempVal = limitEntries.get(key);
-			if (tempVal == Limit.DISABLED) {
-				value = "DISABLED";
-			} else if (tempVal == Limit.INFINITE) {
-				value = "INFINITE";
-			} else {
-				value = Integer.toString(tempVal);
-			}
-
-			configHandle.set(key, value);
+			configHandle.set(key, Limit.limit2String(limitEntries.get(key)));
 		}
 
 		configHandle.save(LIMITS_FILE);
@@ -92,6 +82,17 @@ public class LimitHandler {
 		// limitList.add(new PermissionLimit("permission", "perm"));
 		limitList.add(new PlayerLimit("player", "p"));
 		limitList.add(new PlayerTokenLimit("playertoken", "pt"));
+	}
+
+	public Limit getLimitClassByTag(String tag) {
+		final Iterator<Limit> i = limitList.iterator();
+		while (i.hasNext()) {
+			final Limit limit = i.next();
+			if (limit.getTag().equals(tag)) {
+				return limit;
+			}
+		}
+		return null;
 	}
 
 	public Limit getLimitClassByName(String name) {
@@ -112,8 +113,8 @@ public class LimitHandler {
 			// Player limits
 			if (token != null) {
 				curLimit = getLimitClassByName("playertoken");
-				if (((PlayerTokenLimit) curLimit).getLimit(player, token) != Limit.DISABLED) {
-					if (((PlayerTokenLimit) curLimit).checkLimit(player, token)) {
+				if (((PlayerTokenLimit) curLimit).getLimit(player.getName(), token) != Limit.DISABLED) {
+					if (((PlayerTokenLimit) curLimit).checkLimit(player.getName(), token)) {
 						return true;
 					} else {
 						langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_PLAYER", null);
@@ -122,8 +123,8 @@ public class LimitHandler {
 				}
 			}
 			curLimit = getLimitClassByName("player");
-			if (((PlayerLimit) curLimit).getLimit(player) != Limit.DISABLED) {
-				if (((PlayerLimit) curLimit).checkLimit(player)) {
+			if (((PlayerLimit) curLimit).getLimit(player.getName()) != Limit.DISABLED) {
+				if (((PlayerLimit) curLimit).checkLimit(player.getName())) {
 					return true;
 				} else {
 					langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_PLAYER", null);
@@ -138,7 +139,7 @@ public class LimitHandler {
 				if (token != null) {
 					curLimit = getLimitClassByName("parentregiontoken");
 					if (((ParentregionTokenLimit) curLimit).getLimit(protectedRegion, token) != Limit.DISABLED) {
-						if (((ParentregionTokenLimit) curLimit).checkLimit(player, protectedRegion, token)) {
+						if (((ParentregionTokenLimit) curLimit).checkLimit(player.getName(), protectedRegion, token)) {
 							return true;
 						} else {
 							langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_PARENTREGION", null);
@@ -148,7 +149,7 @@ public class LimitHandler {
 				}
 				curLimit = getLimitClassByName("parentregion");
 				if (((ParentregionLimit) curLimit).getLimit(protectedRegion) != Limit.DISABLED) {
-					if (((ParentregionLimit) curLimit).checkLimit(player, protectedRegion)) {
+					if (((ParentregionLimit) curLimit).checkLimit(player.getName(), protectedRegion)) {
 						return true;
 					} else {
 						langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_PARENTREGION", null);
@@ -162,7 +163,7 @@ public class LimitHandler {
 				if (token != null) {
 					curLimit = getLimitClassByName("worldtoken");
 					if (((WorldTokenLimit) curLimit).getLimit(world, token) != Limit.DISABLED) {
-						if (((WorldTokenLimit) curLimit).checkLimit(player, world, token)) {
+						if (((WorldTokenLimit) curLimit).checkLimit(player.getName(), world, token)) {
 							return true;
 						} else {
 							langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN_WORLD", null);
@@ -172,7 +173,7 @@ public class LimitHandler {
 				}
 				curLimit = getLimitClassByName("world");
 				if (((WorldLimit) curLimit).getLimit(world) != Limit.DISABLED) {
-					if (((WorldLimit) curLimit).checkLimit(player, world)) {
+					if (((WorldLimit) curLimit).checkLimit(player.getName(), world)) {
 						return true;
 					} else {
 						langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL_WORLD", null);
@@ -185,7 +186,7 @@ public class LimitHandler {
 			if (token != null) {
 				curLimit = getLimitClassByName("token");
 				if (((TokenLimit) curLimit).getLimit(token) != Limit.DISABLED) {
-					if (((TokenLimit) curLimit).checkLimit(player, token)) {
+					if (((TokenLimit) curLimit).checkLimit(player.getName(), token)) {
 						return true;
 					} else {
 						langHandler.playerErrorOut(player, "PLAYER.LIMITS.TOKEN", null);
@@ -197,7 +198,7 @@ public class LimitHandler {
 			// Global limit
 			curLimit = getLimitClassByName("global");
 			if (((GlobalLimit) curLimit).getLimit() != Limit.DISABLED) {
-				if (((GlobalLimit) curLimit).checkLimit(player)) {
+				if (((GlobalLimit) curLimit).checkLimit(player.getName())) {
 					return true;
 				} else {
 					langHandler.playerErrorOut(player, "PLAYER.LIMITS.GLOBAL", null);

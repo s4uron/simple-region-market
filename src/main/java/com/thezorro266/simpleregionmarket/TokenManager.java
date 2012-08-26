@@ -181,17 +181,21 @@ public class TokenManager {
 
 			final YamlConfiguration configHandle = YamlConfiguration.loadConfiguration(CONFIG_FILE);
 			for (final String key : configHandle.getKeys(false)) {
-				final String type = configHandle.getString(key + ".type");
-				if (type.equalsIgnoreCase("sell")) {
-					tokenList.add(new TemplateSell(plugin, langHandler, this, key));
-				} else if (type.equalsIgnoreCase("let")) {
-					tokenList.add(new TemplateLet(plugin, langHandler, this, key));
-				} else if (type.equalsIgnoreCase("hotel")) {
-					tokenList.add(new TemplateHotel(plugin, langHandler, this, key));
+				if (!key.equalsIgnoreCase("all")) {
+					final String type = configHandle.getString(key + ".type");
+					if (type.equalsIgnoreCase("sell")) {
+						tokenList.add(new TemplateSell(plugin, langHandler, this, key));
+					} else if (type.equalsIgnoreCase("let")) {
+						tokenList.add(new TemplateLet(plugin, langHandler, this, key));
+					} else if (type.equalsIgnoreCase("hotel")) {
+						tokenList.add(new TemplateHotel(plugin, langHandler, this, key));
+					} else {
+						final ArrayList<String> list = new ArrayList<String>();
+						list.add(type);
+						langHandler.consoleOut("TEMPLATES.WARN.TYPE_NOT_KOWN", Level.WARNING, list);
+					}
 				} else {
-					final ArrayList<String> list = new ArrayList<String>();
-					list.add(type);
-					langHandler.consoleOut("TEMPLATES.WARN.TYPE_NOT_KOWN", Level.WARNING, list);
+					langHandler.consoleDirectOut(Level.SEVERE, "Template 'all' cannot be loaded. Please rename it");
 				}
 			}
 		} else {

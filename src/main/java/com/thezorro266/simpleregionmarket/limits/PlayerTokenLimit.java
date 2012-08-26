@@ -1,7 +1,6 @@
 package com.thezorro266.simpleregionmarket.limits;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.thezorro266.simpleregionmarket.SimpleRegionMarket;
@@ -13,11 +12,20 @@ public class PlayerTokenLimit extends Limit {
 		super(name, tag);
 	}
 
-	public int getLimit(Player player, TemplateMain token) {
-		return getLimitEntry(token.id + ".player." + player.getName());
+	public int getLimit(String player, TemplateMain token) {
+		return getLimitEntry("player." + token.id + "." + player);
 	}
 
-	public boolean checkLimit(Player player, TemplateMain token) {
+	public void setLimit(int newLimit, String player, TemplateMain token) {
+		final String key = "player." + token.id + "." + player;
+		if (newLimit == DISABLED) {
+			SimpleRegionMarket.limitHandler.limitEntries.remove(key);
+		} else {
+			SimpleRegionMarket.limitHandler.limitEntries.put(key, newLimit);
+		}
+	}
+
+	public boolean checkLimit(String player, TemplateMain token) {
 		final int limitEntry = getLimit(player, token);
 		if (limitEntry != INFINITE && limitEntry != DISABLED) {
 			return countPlayerRegions(player, token) < limitEntry;
@@ -25,7 +33,7 @@ public class PlayerTokenLimit extends Limit {
 		return true;
 	}
 
-	public int countPlayerRegions(Player player, TemplateMain token) {
+	public int countPlayerRegions(String player, TemplateMain token) {
 		int count = 0;
 		for (final String world : token.entries.keySet()) {
 			for (final String region : token.entries.get(world).keySet()) {

@@ -20,9 +20,18 @@ TEMPLATES:
     NO_STANDARD_TEMPLATES: Could not create standard templates
 COMMON:
   CONSOLE_NOWORLD: You have to give the world in the console
-  NO_REGION: Region $0 was not found in world $1.
+  NO_REGION: There was no region given.
+  NO_REGION_FOUND: Region $0 was not found in world $1.
   NO_PLAYER: The given player was not found.
   NO_WORLD: The given world was not found.
+  NO_TEMPLATE: The given template was not found.
+LIMITS:
+  NORM:
+    LIMIT_GET: The limit for $0 is $1.
+    LIMIT_SET: You set the limit for $0 to $1.
+  ERROR:
+    CREATE_LIMITSFILE: Could not create limits.yml
+    SAVE_LIMITSFILE: Could not save limits.
 CMD:
   RELEASE:
     NO_ARG: 'Usage: /rm release <region> (<world>) - Removes the owners and members from the region'

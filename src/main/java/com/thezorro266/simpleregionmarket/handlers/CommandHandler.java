@@ -1,6 +1,8 @@
 package com.thezorro266.simpleregionmarket.handlers;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -16,6 +18,15 @@ import com.thezorro266.simpleregionmarket.MorePageDisplay;
 import com.thezorro266.simpleregionmarket.SimpleRegionMarket;
 import com.thezorro266.simpleregionmarket.TokenManager;
 import com.thezorro266.simpleregionmarket.Utils;
+import com.thezorro266.simpleregionmarket.limits.GlobalLimit;
+import com.thezorro266.simpleregionmarket.limits.Limit;
+import com.thezorro266.simpleregionmarket.limits.ParentregionLimit;
+import com.thezorro266.simpleregionmarket.limits.ParentregionTokenLimit;
+import com.thezorro266.simpleregionmarket.limits.PlayerLimit;
+import com.thezorro266.simpleregionmarket.limits.PlayerTokenLimit;
+import com.thezorro266.simpleregionmarket.limits.TokenLimit;
+import com.thezorro266.simpleregionmarket.limits.WorldLimit;
+import com.thezorro266.simpleregionmarket.limits.WorldTokenLimit;
 import com.thezorro266.simpleregionmarket.signs.TemplateMain;
 
 public class CommandHandler implements CommandExecutor {
@@ -97,9 +108,9 @@ public class CommandHandler implements CommandExecutor {
 						}
 					} else {
 						if (isConsole) {
-							langHandler.consoleOut("COMMON.NO_REGION", Level.WARNING, list);
+							langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 						} else {
-							langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+							langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 						}
 					}
 				}
@@ -150,9 +161,9 @@ public class CommandHandler implements CommandExecutor {
 						}
 					} else {
 						if (isConsole) {
-							langHandler.consoleOut("COMMON.NO_REGION", Level.WARNING, list);
+							langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 						} else {
-							langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+							langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 						}
 					}
 				}
@@ -165,11 +176,492 @@ public class CommandHandler implements CommandExecutor {
 			} else {
 				langHandler.playerDirectOut(player, ChatColor.BLUE, "Not yet implemented");
 			}
-		} else if (args[0].equalsIgnoreCase("limits") || args[0].equalsIgnoreCase("limit")) { // TODO set/get limits command
-			final MorePageDisplay chatDisplay = new MorePageDisplay(new String[] {
-				"<Limits>"
-			}, "Limits for all kind of stuff");
-			chatDisplay.display(sender);
+		} else if (args[0].equalsIgnoreCase("limits") || args[0].equalsIgnoreCase("limit")) {
+			if (isConsole || SimpleRegionMarket.permManager.isAdmin(player)) {
+				final LimitHandler limitHandler = SimpleRegionMarket.limitHandler;
+
+				final MorePageDisplay chatDisplay = new MorePageDisplay(new String[] {
+					"< " + "Limits" + " >"
+				}, "limits");
+				chatDisplay.append("( " + "Set or get Limits" + " )");
+
+				final Iterator<Limit> i = limitHandler.limitList.iterator();
+				while (i.hasNext()) {
+					final Limit limitEntry = i.next();
+					chatDisplay.append("| " + ChatColor.YELLOW + "/rm limits " + limitEntry.getName() + " (" + limitEntry.getTag() + ")");
+				}
+
+				if (args.length < 2) {
+					chatDisplay.display(sender);
+				} else {
+					final String limitsName = args[1].toLowerCase();
+					Limit limitEntry = limitHandler.getLimitClassByTag(limitsName);
+
+					if (limitEntry == null) {
+						limitEntry = limitHandler.getLimitClassByName(limitsName);
+					}
+
+					if (limitEntry != null) {
+						final ArrayList<String> list = new ArrayList<String>();
+						if (limitsName.equals("global") || limitsName.equals("g")) {
+							list.add("global");
+							if (args.length < 3) {
+								list.add(Limit.limit2String(((GlobalLimit) limitEntry).getLimit()));
+								if (isConsole) {
+									langHandler.consoleOut("LIMITS.NORM.LIMIT_GET", Level.INFO, list);
+								} else {
+									langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_GET", list);
+								}
+							} else {
+								final int newLimit = Limit.string2Limit(args[2]);
+								((GlobalLimit) limitEntry).setLimit(newLimit);
+								try {
+									limitHandler.save();
+									list.add(Limit.limit2String(newLimit));
+									if (isConsole) {
+										langHandler.consoleOut("LIMITS.NORM.LIMIT_SET", Level.INFO, list);
+									} else {
+										langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_SET", list);
+									}
+								} catch (final IOException e) {
+									if (isConsole) {
+										langHandler.consoleOut("LIMITS.ERROR.SAVE_LIMITSFILE");
+										e.printStackTrace();
+									} else {
+										langHandler.playerErrorOut(player, "LIMITS.ERROR.SAVE_LIMITSFILE", null);
+									}
+								}
+							}
+						} else if (limitsName.equals("token") || limitsName.equals("t")) {
+							if (args.length < 3) {
+								if (isConsole) {
+									langHandler.consoleOut("COMMON.NO_TEMPLATE", Level.WARNING, null);
+								} else {
+									langHandler.playerErrorOut(player, "COMMON.NO_TEMPLATE", null);
+								}
+							} else {
+								TemplateMain token = null;
+								for (final TemplateMain sToken : TokenManager.tokenList) {
+									if (sToken.id.equalsIgnoreCase(args[2])) {
+										token = sToken;
+										break;
+									}
+								}
+								if (token == null) {
+									if (isConsole) {
+										langHandler.consoleOut("COMMON.NO_TEMPLATE", Level.WARNING, null);
+									} else {
+										langHandler.playerErrorOut(player, "COMMON.NO_TEMPLATE", null);
+									}
+								} else {
+									list.add("template " + token.id);
+									if (args.length < 4) {
+										list.add(Limit.limit2String(((TokenLimit) limitEntry).getLimit(token)));
+										if (isConsole) {
+											langHandler.consoleOut("LIMITS.NORM.LIMIT_GET", Level.INFO, list);
+										} else {
+											langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_GET", list);
+										}
+									} else {
+										final int newLimit = Limit.string2Limit(args[3]);
+										((TokenLimit) limitEntry).setLimit(newLimit, token);
+										try {
+											limitHandler.save();
+											list.add(Limit.limit2String(newLimit));
+											if (isConsole) {
+												langHandler.consoleOut("LIMITS.NORM.LIMIT_SET", Level.INFO, list);
+											} else {
+												langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_SET", list);
+											}
+										} catch (final IOException e) {
+											if (isConsole) {
+												langHandler.consoleOut("LIMITS.ERROR.SAVE_LIMITSFILE");
+												e.printStackTrace();
+											} else {
+												langHandler.playerErrorOut(player, "LIMITS.ERROR.SAVE_LIMITSFILE", null);
+											}
+										}
+									}
+								}
+							}
+						} else if (limitsName.equals("world") || limitsName.equals("w")) {
+							if (args.length < 3) {
+								if (isConsole) {
+									langHandler.consoleOut("COMMON.NO_WORLD", Level.WARNING, null);
+								} else {
+									langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
+								}
+							} else {
+								final World world = Bukkit.getWorld(args[2]);
+								if (world == null) {
+									if (isConsole) {
+										langHandler.consoleOut("COMMON.NO_WORLD", Level.WARNING, null);
+									} else {
+										langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
+									}
+								} else {
+									list.add("world " + world.getName());
+									if (args.length < 4) {
+										list.add(Limit.limit2String(((WorldLimit) limitEntry).getLimit(world.getName())));
+										if (isConsole) {
+											langHandler.consoleOut("LIMITS.NORM.LIMIT_GET", Level.INFO, list);
+										} else {
+											langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_GET", list);
+										}
+									} else {
+										final int newLimit = Limit.string2Limit(args[3]);
+										((WorldLimit) limitEntry).setLimit(newLimit, world.getName());
+										try {
+											limitHandler.save();
+											list.add(Limit.limit2String(newLimit));
+											if (isConsole) {
+												langHandler.consoleOut("LIMITS.NORM.LIMIT_SET", Level.INFO, list);
+											} else {
+												langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_SET", list);
+											}
+										} catch (final IOException e) {
+											if (isConsole) {
+												langHandler.consoleOut("LIMITS.ERROR.SAVE_LIMITSFILE");
+												e.printStackTrace();
+											} else {
+												langHandler.playerErrorOut(player, "LIMITS.ERROR.SAVE_LIMITSFILE", null);
+											}
+										}
+									}
+								}
+							}
+						} else if (limitsName.equals("worldtoken") || limitsName.equals("wt")) {
+							if (args.length < 3) {
+								if (isConsole) {
+									langHandler.consoleOut("COMMON.NO_WORLD", Level.WARNING, null);
+								} else {
+									langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
+								}
+							} else {
+								final World world = Bukkit.getWorld(args[2]);
+								if (world == null) {
+									if (isConsole) {
+										langHandler.consoleOut("COMMON.NO_WORLD", Level.WARNING, null);
+									} else {
+										langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
+									}
+								} else {
+									if (args.length < 4) {
+										if (isConsole) {
+											langHandler.consoleOut("COMMON.NO_TEMPLATE", Level.WARNING, null);
+										} else {
+											langHandler.playerErrorOut(player, "COMMON.NO_TEMPLATE", null);
+										}
+									} else {
+										TemplateMain token = null;
+										for (final TemplateMain sToken : TokenManager.tokenList) {
+											if (sToken.id.equalsIgnoreCase(args[3])) {
+												token = sToken;
+												break;
+											}
+										}
+										if (token == null) {
+											if (isConsole) {
+												langHandler.consoleOut("COMMON.NO_TEMPLATE", Level.WARNING, null);
+											} else {
+												langHandler.playerErrorOut(player, "COMMON.NO_TEMPLATE", null);
+											}
+										} else {
+											list.add("world + " + world.getName() + ", template " + token.id);
+											if (args.length < 5) {
+												list.add(Limit.limit2String(((WorldTokenLimit) limitEntry).getLimit(world.getName(), token)));
+												if (isConsole) {
+													langHandler.consoleOut("LIMITS.NORM.LIMIT_GET", Level.INFO, list);
+												} else {
+													langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_GET", list);
+												}
+											} else {
+												final int newLimit = Limit.string2Limit(args[4]);
+												((WorldTokenLimit) limitEntry).setLimit(newLimit, world.getName(), token);
+												try {
+													limitHandler.save();
+													list.add(Limit.limit2String(newLimit));
+													if (isConsole) {
+														langHandler.consoleOut("LIMITS.NORM.LIMIT_SET", Level.INFO, list);
+													} else {
+														langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_SET", list);
+													}
+												} catch (final IOException e) {
+													if (isConsole) {
+														langHandler.consoleOut("LIMITS.ERROR.SAVE_LIMITSFILE");
+														e.printStackTrace();
+													} else {
+														langHandler.playerErrorOut(player, "LIMITS.ERROR.SAVE_LIMITSFILE", null);
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						} else if (limitsName.equals("parentregion") || limitsName.equals("pr")) {
+							if (args.length < 3) {
+								if (isConsole) {
+									langHandler.consoleOut("COMMON.NO_REGION", Level.WARNING, null);
+								} else {
+									langHandler.playerErrorOut(player, "COMMON.NO_REGION", null);
+								}
+							} else {
+								final String region = args[2];
+								if (args.length < 4) {
+									if (isConsole) {
+										langHandler.consoleOut("COMMON.NO_WORLD", Level.WARNING, null);
+									} else {
+										langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
+									}
+								} else {
+									final World world = Bukkit.getWorld(args[3]);
+									if (world == null) {
+										if (isConsole) {
+											langHandler.consoleOut("COMMON.NO_WORLD", Level.WARNING, null);
+										} else {
+											langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
+										}
+									} else {
+										final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(world, region);
+										if (protectedRegion == null) {
+											final ArrayList<String> list1 = new ArrayList<String>();
+											list1.add(region);
+											list1.add(world.getName());
+											if (isConsole) {
+												langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list1);
+											} else {
+												langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list1);
+											}
+										} else {
+											list.add("parentregion " + protectedRegion.getId() + ", world " + world.getName());
+											if (args.length < 5) {
+												list.add(Limit.limit2String(((ParentregionLimit) limitEntry).getLimit(protectedRegion)));
+												if (isConsole) {
+													langHandler.consoleOut("LIMITS.NORM.LIMIT_GET", Level.INFO, list);
+												} else {
+													langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_GET", list);
+												}
+											} else {
+												final int newLimit = Limit.string2Limit(args[4]);
+												((ParentregionLimit) limitEntry).setLimit(newLimit, protectedRegion);
+												try {
+													limitHandler.save();
+													list.add(Limit.limit2String(newLimit));
+													if (isConsole) {
+														langHandler.consoleOut("LIMITS.NORM.LIMIT_SET", Level.INFO, list);
+													} else {
+														langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_SET", list);
+													}
+												} catch (final IOException e) {
+													if (isConsole) {
+														langHandler.consoleOut("LIMITS.ERROR.SAVE_LIMITSFILE");
+														e.printStackTrace();
+													} else {
+														langHandler.playerErrorOut(player, "LIMITS.ERROR.SAVE_LIMITSFILE", null);
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						} else if (limitsName.equals("parentregiontoken") || limitsName.equals("prt")) {
+							if (args.length < 3) {
+								if (isConsole) {
+									langHandler.consoleOut("COMMON.NO_REGION", Level.WARNING, null);
+								} else {
+									langHandler.playerErrorOut(player, "COMMON.NO_REGION", null);
+								}
+							} else {
+								final String region = args[2];
+								if (args.length < 4) {
+									if (isConsole) {
+										langHandler.consoleOut("COMMON.NO_WORLD", Level.WARNING, null);
+									} else {
+										langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
+									}
+								} else {
+									final World world = Bukkit.getWorld(args[3]);
+									if (world == null) {
+										if (isConsole) {
+											langHandler.consoleOut("COMMON.NO_WORLD", Level.WARNING, null);
+										} else {
+											langHandler.playerErrorOut(player, "COMMON.NO_WORLD", null);
+										}
+									} else {
+										final ProtectedRegion protectedRegion = SimpleRegionMarket.wgManager.getProtectedRegion(world, region);
+										if (protectedRegion == null) {
+											final ArrayList<String> list1 = new ArrayList<String>();
+											list1.add(region);
+											list1.add(world.getName());
+											if (isConsole) {
+												langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list1);
+											} else {
+												langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list1);
+											}
+										} else {
+											if (args.length < 5) {
+												if (isConsole) {
+													langHandler.consoleOut("COMMON.NO_TEMPLATE", Level.WARNING, null);
+												} else {
+													langHandler.playerErrorOut(player, "COMMON.NO_TEMPLATE", null);
+												}
+											} else {
+												TemplateMain token = null;
+												for (final TemplateMain sToken : TokenManager.tokenList) {
+													if (sToken.id.equalsIgnoreCase(args[4])) {
+														token = sToken;
+														break;
+													}
+												}
+												if (token == null) {
+													if (isConsole) {
+														langHandler.consoleOut("COMMON.NO_TEMPLATE", Level.WARNING, null);
+													} else {
+														langHandler.playerErrorOut(player, "COMMON.NO_TEMPLATE", null);
+													}
+												} else {
+													list.add("parentregion " + protectedRegion.getId() + ", world " + world.getName() + ", template "
+															+ token.id);
+													if (args.length < 6) {
+														list.add(Limit.limit2String(((ParentregionTokenLimit) limitEntry).getLimit(protectedRegion, token)));
+														if (isConsole) {
+															langHandler.consoleOut("LIMITS.NORM.LIMIT_GET", Level.INFO, list);
+														} else {
+															langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_GET", list);
+														}
+													} else {
+														final int newLimit = Limit.string2Limit(args[5]);
+														((ParentregionTokenLimit) limitEntry).setLimit(newLimit, protectedRegion, token);
+														try {
+															limitHandler.save();
+															list.add(Limit.limit2String(newLimit));
+															if (isConsole) {
+																langHandler.consoleOut("LIMITS.NORM.LIMIT_SET", Level.INFO, list);
+															} else {
+																langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_SET", list);
+															}
+														} catch (final IOException e) {
+															if (isConsole) {
+																langHandler.consoleOut("LIMITS.ERROR.SAVE_LIMITSFILE");
+																e.printStackTrace();
+															} else {
+																langHandler.playerErrorOut(player, "LIMITS.ERROR.SAVE_LIMITSFILE", null);
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						} else if (limitsName.equals("player") || limitsName.equals("p")) {
+							if (args.length < 3) {
+								if (isConsole) {
+									langHandler.consoleOut("COMMON.NO_PLAYER", Level.WARNING, null);
+								} else {
+									langHandler.playerErrorOut(player, "COMMON.NO_PLAYER", null);
+								}
+							} else {
+								final String playerX = args[2].toLowerCase();
+								list.add("player " + playerX);
+								if (args.length < 4) {
+									list.add(Limit.limit2String(((PlayerLimit) limitEntry).getLimit(playerX)));
+									if (isConsole) {
+										langHandler.consoleOut("LIMITS.NORM.LIMIT_GET", Level.INFO, list);
+									} else {
+										langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_GET", list);
+									}
+								} else {
+									final int newLimit = Limit.string2Limit(args[3]);
+									((PlayerLimit) limitEntry).setLimit(newLimit, playerX);
+									try {
+										limitHandler.save();
+										list.add(Limit.limit2String(newLimit));
+										if (isConsole) {
+											langHandler.consoleOut("LIMITS.NORM.LIMIT_SET", Level.INFO, list);
+										} else {
+											langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_SET", list);
+										}
+									} catch (final IOException e) {
+										if (isConsole) {
+											langHandler.consoleOut("LIMITS.ERROR.SAVE_LIMITSFILE");
+											e.printStackTrace();
+										} else {
+											langHandler.playerErrorOut(player, "LIMITS.ERROR.SAVE_LIMITSFILE", null);
+										}
+									}
+								}
+							}
+						} else if (limitsName.equals("playertoken") || limitsName.equals("pt")) {
+							if (args.length < 3) {
+								if (isConsole) {
+									langHandler.consoleOut("COMMON.NO_PLAYER", Level.WARNING, null);
+								} else {
+									langHandler.playerErrorOut(player, "COMMON.NO_PLAYER", null);
+								}
+							} else {
+								final String playerX = args[2];
+								if (args.length < 4) {
+									if (isConsole) {
+										langHandler.consoleOut("COMMON.NO_TEMPLATE", Level.WARNING, null);
+									} else {
+										langHandler.playerErrorOut(player, "COMMON.NO_TEMPLATE", null);
+									}
+								} else {
+									TemplateMain token = null;
+									for (final TemplateMain sToken : TokenManager.tokenList) {
+										if (sToken.id.equalsIgnoreCase(args[3])) {
+											token = sToken;
+											break;
+										}
+									}
+									if (token == null) {
+										if (isConsole) {
+											langHandler.consoleOut("COMMON.NO_TEMPLATE", Level.WARNING, null);
+										} else {
+											langHandler.playerErrorOut(player, "COMMON.NO_TEMPLATE", null);
+										}
+									} else {
+										list.add("player " + playerX + ", template " + token.id);
+										if (args.length < 5) {
+											list.add(Limit.limit2String(((PlayerTokenLimit) limitEntry).getLimit(playerX, token)));
+											if (isConsole) {
+												langHandler.consoleOut("LIMITS.NORM.LIMIT_GET", Level.INFO, list);
+											} else {
+												langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_GET", list);
+											}
+										} else {
+											final int newLimit = Limit.string2Limit(args[4]);
+											((PlayerTokenLimit) limitEntry).setLimit(newLimit, playerX, token);
+											try {
+												limitHandler.save();
+												list.add(Limit.limit2String(newLimit));
+												if (isConsole) {
+													langHandler.consoleOut("LIMITS.NORM.LIMIT_SET", Level.INFO, list);
+												} else {
+													langHandler.playerNormalOut(player, "LIMITS.NORM.LIMIT_SET", list);
+												}
+											} catch (final IOException e) {
+												if (isConsole) {
+													langHandler.consoleOut("LIMITS.ERROR.SAVE_LIMITSFILE");
+													e.printStackTrace();
+												} else {
+													langHandler.playerErrorOut(player, "LIMITS.ERROR.SAVE_LIMITSFILE", null);
+												}
+											}
+										}
+									}
+								}
+							}
+						} else {
+							chatDisplay.display(sender);
+						}
+					}
+				}
+			}
 		} else if (args[0].equalsIgnoreCase("addmember")) {
 			if (args.length < 3) {
 				if (isConsole) {
@@ -214,9 +706,9 @@ public class CommandHandler implements CommandExecutor {
 					list.add(region);
 					list.add(world);
 					if (isConsole) {
-						langHandler.consoleOut("COMMON.NO_REGION", Level.SEVERE, list);
+						langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 					} else {
-						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+						langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 					}
 					return true;
 				}
@@ -264,9 +756,9 @@ public class CommandHandler implements CommandExecutor {
 					list.add(region);
 					list.add(world);
 					if (isConsole) {
-						langHandler.consoleOut("COMMON.NO_REGION", Level.WARNING, list);
+						langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 					} else {
-						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+						langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 					}
 				}
 			}
@@ -314,9 +806,9 @@ public class CommandHandler implements CommandExecutor {
 					list.add(region);
 					list.add(world);
 					if (isConsole) {
-						langHandler.consoleOut("COMMON.NO_REGION", Level.SEVERE, list);
+						langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 					} else {
-						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+						langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 					}
 					return true;
 				}
@@ -364,9 +856,9 @@ public class CommandHandler implements CommandExecutor {
 					list.add(region);
 					list.add(world);
 					if (isConsole) {
-						langHandler.consoleOut("COMMON.NO_REGION", Level.WARNING, list);
+						langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 					} else {
-						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+						langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 					}
 				}
 			}
@@ -414,9 +906,9 @@ public class CommandHandler implements CommandExecutor {
 					list.add(region);
 					list.add(world);
 					if (isConsole) {
-						langHandler.consoleOut("COMMON.NO_REGION", Level.SEVERE, list);
+						langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 					} else {
-						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+						langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 					}
 					return true;
 				}
@@ -464,9 +956,9 @@ public class CommandHandler implements CommandExecutor {
 					list.add(region);
 					list.add(world);
 					if (isConsole) {
-						langHandler.consoleOut("COMMON.NO_REGION", Level.WARNING, list);
+						langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 					} else {
-						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+						langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 					}
 				}
 			}
@@ -514,9 +1006,9 @@ public class CommandHandler implements CommandExecutor {
 					list.add(region);
 					list.add(world);
 					if (isConsole) {
-						langHandler.consoleOut("COMMON.NO_REGION", Level.SEVERE, list);
+						langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 					} else {
-						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+						langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 					}
 					return true;
 				}
@@ -564,9 +1056,9 @@ public class CommandHandler implements CommandExecutor {
 					list.add(region);
 					list.add(world);
 					if (isConsole) {
-						langHandler.consoleOut("COMMON.NO_REGION", Level.WARNING, list);
+						langHandler.consoleOut("COMMON.NO_REGION_FOUND", Level.WARNING, list);
 					} else {
-						langHandler.playerErrorOut(player, "COMMON.NO_REGION", list);
+						langHandler.playerErrorOut(player, "COMMON.NO_REGION_FOUND", list);
 					}
 				}
 			}
