@@ -36,11 +36,13 @@ public class ParentregionTokenLimit extends Limit {
 	public int countPlayerRegions(String player, ProtectedRegion parentRegion, TemplateMain token) {
 		int count = 0;
 		for (final String world : token.entries.keySet()) {
-			for (final String region : token.entries.get(world).keySet()) {
-				final ProtectedRegion childRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
-				if (childRegion != null && childRegion.getParent().equals(parentRegion)) {
-					if (token.isRegionOwner(player, world, region)) {
-						count++;
+			if(token.entries.containsKey(world)) {
+				for (final String region : token.entries.get(world).keySet()) {
+					final ProtectedRegion childRegion = SimpleRegionMarket.wgManager.getProtectedRegion(Bukkit.getWorld(world), region);
+					if (childRegion != null && childRegion.getParent().equals(parentRegion)) {
+						if (token.isRegionOwner(player, world, region)) {
+							count++;
+						}
 					}
 				}
 			}
