@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldguard.protection.databases.ProtectionDatabaseException;
 import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.thezorro266.simpleregionmarket.handlers.CommandHandler;
+import com.thezorro266.bukkit.ch.Commander;
 import com.thezorro266.simpleregionmarket.handlers.ConfigHandler;
 import com.thezorro266.simpleregionmarket.handlers.LanguageHandler;
 import com.thezorro266.simpleregionmarket.handlers.LimitHandler;
@@ -30,7 +30,7 @@ public class SimpleRegionMarket extends JavaPlugin {
 	public static LimitHandler limitHandler = null;
 
 	// Private classes
-	private CommandHandler commandHandler;
+	private Commander commander;
 	private LanguageHandler langHandler;
 	private TokenManager tokenManager;
 
@@ -72,8 +72,7 @@ public class SimpleRegionMarket extends JavaPlugin {
 
 		new ConfirmListener(this);
 
-		commandHandler = new CommandHandler(this, langHandler);
-		getCommand("regionmarket").setExecutor(commandHandler);
+		commander = new Commander(this);
 
 		final File agents = new File(SimpleRegionMarket.getPluginDir() + "agents.yml");
 		if (agents.exists()) {
