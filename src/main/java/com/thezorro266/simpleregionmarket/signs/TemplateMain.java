@@ -230,7 +230,7 @@ public abstract class TemplateMain {
 			if (!Utils.getOptionString(this, "buyer").equalsIgnoreCase("owner")) {
 				langHandler.consoleDirectOut(Level.WARNING, "The buyer state " + Utils.getOptionString(this, "buyer") + " is not known.");
 			}
-			protectedRegion.getMembers().addPlayer(SimpleRegionMarket.wgManager.wrapPlayer(newOwner));
+			protectedRegion.getOwners().addPlayer(SimpleRegionMarket.wgManager.wrapPlayer(newOwner));
 		}
 
 		if (Utils.getOptionBoolean(this, "removesigns")) {
